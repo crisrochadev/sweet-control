@@ -1,0 +1,17 @@
+// app global css in SCSS form
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: MoiraiOne;
+  src: url(../assets/fonts/MoiraiOne-Regular.woff);
+}
+
+// declare a class which applies it
+.sweet-font {
+  font-family: 'MoiraiOne';
+}
+.debug{
+  border:2px solid red
+}

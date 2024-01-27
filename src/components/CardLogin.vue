@@ -1,9 +1,8 @@
 <template>
-  <q-card class="h-full grid grid-rows-[60px,1px,1fr,1px,200px] bg-accent">
-    <q-card-section
-      header
-      class="flex justify-between font-bold text-gray-700 items-center"
-    >
+  <q-card
+    class="h-auto min-h-full w-full flex flex-col justify-between items-center gap-2 p-0 flex-nowrap"
+  >
+    <q-card-section class="w-full h-[60px] flex justify-between items-center">
       <q-btn
         flat
         dense
@@ -35,45 +34,44 @@
         @click="tabb = 'register'"
       />
     </q-card-section>
-    <q-separator />
-    <q-card-section class="">
+    <q-card-section class="w-full flex justify-center flex-wrap items-center">
       <slot />
     </q-card-section>
-    <q-separator v-if="tabb != 'recover'" />
-    <q-card-actions class="relative" v-if="tabb != 'recover'">
-      <span
-        class="absolute -top-3 left-2/4 -translate-x-2/4 bg-accent text-sw-primary"
-        >ou</span
-      >
-      <div
-        class="relative flex justify-center items-center flex-col gap-2 mx-auto w-11/12 md:w-8/12"
-      >
+    <q-card-section class="w-full h-[150px]">
+      <div class="relative w-full h-[1px] bg-gray-200">
+        <span
+          class="absolute -top-3 left-2/4 -translate-x-2/4 bg-white text-sw-primary"
+          >ou</span
+        >
+      </div>
+      <div class="h-full items-center justify-center flex gap-4 mt-4">
         <q-btn
-          class="full-width"
           icon="mdi-google"
           size="md"
+          class="h-10 w-10 lg:h-14 lg:w-14"
           text-color="red-8"
           outline
-          label="Entrar com Google"
+          @click="google"
         />
         <q-btn
           icon="mdi-facebook"
           size="md"
-          label="Entrar com Facebook"
-          class="full-width"
           text-color="blue-8"
           outline
+          class="h-10 w-10 lg:h-14 lg:w-14"
           @click="facebook"
         />
       </div>
-    </q-card-actions>
+    </q-card-section>
   </q-card>
 </template>
 <script>
-import {supabase} from 'src/boot/supabase';
+import { QSpinnerPie } from "quasar";
+import { supabase } from "src/boot/supabase";
+import { useAuth } from "src/stores/auth";
 
 export default {
-  props: ["title", "tab"],
+  props: ["title", "tab", "countTime"],
   emits: ["update:tab"],
   computed: {
     tabb: {
@@ -85,12 +83,147 @@ export default {
       },
     },
   },
+  data(){
+    const auth = useAuth()
+    return{
+      auth,
+      time:null,
+      dial:null
+    }
+  },
   methods: {
-    async facebook() {
+    show(){
+      this.$q.loading.show({
+          spinner: QSpinnerPie,
+          spinnerColor: 'primary',
+          spinnerSize: 140,
+          backgroundColor: 'accent',
+          message: 'Aguarde...',
+          messageColor: 'primary'
+        })
+    },
+    hide(){
+      this.$q.loading.hide()
+    },
+    async loginWithProvider(e, provider) {
+      e.preventDefault();
+
+      this.show()
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "facebook",
+        provider: provider,
       });
-      console.log(data,error)
+
+      this.hide()
+      this.$q.loading.hide()
+      if (error) {
+        if (error.toString().includes(" Email rate limit exceeded")) {
+          this.$q.dialog({
+            title: "Erro",
+            message:
+              "Houve muitas tentativas de cadastro, por favor, tente novamente mais tarde",
+            ok: "OK",
+            color: "red",
+          });
+
+          return;
+        } else if (error.toString().includes("For security purposes")) {
+          this.time = Number(
+            error.toString().split("after")[1].substring(0, 3)
+          );
+          this.countTime();
+          this.dial = this.$q.dialog({
+            title: "Acabamos de verificar",
+            message: `Por favor aguarde ${this.time} segundos`,
+            class: "w-full flex justify-center",
+            progress: {
+              spinner: QSpinnerHourglass,
+              color: "primary",
+            },
+            ok: false,
+            color: "red",
+          });
+        } else {
+          this.$q.dialog({
+            title: "Erro",
+            message:
+              "Houve um erro inesperado no cadastro code + " + error.code,
+            ok: "OK",
+            color: "red",
+          });
+        }
+      }
+
+      // console.log(data);
+      if (data && data.user) {
+        this.auth.user = data.user;
+
+        const profile = await supabase
+          .from("profiles")
+          .insert({
+            id: data.user.id,
+            terms: this.terms,
+            policy: this.policy,
+          })
+          .select();
+        // console.log(profile);
+        if (profile && profile.data) {
+          this.auth.user["profile"] = profile.data[0];
+          this.$q.dialog({
+            title: "Deu Certo!",
+            message: `Enviamos um email para ${this.form.email}, por favor, clique no link enviado para confirmar sua conta.`,
+            ok: {
+              label: "ok",
+              color: "primary",
+            },
+          });
+        } else {
+          if (profile.error.code == "23503" || profile.error.code == "23505") {
+            this.$q
+              .dialog({
+                title: "Atenção",
+                message: "Usuário já Cadastrado",
+                ok: {
+                  label: "Entrar",
+                  color: "primary",
+                  outline: true,
+                },
+                cancel: {
+                  label: "sair",
+                  color: "grey-8",
+                  outline: true,
+                },
+                color: "primary",
+              })
+              .onOk(() => {
+                this.tab = "login";
+              });
+          } else {
+            const del = await supabase
+              .from("profiles")
+              .delete()
+              .eq("id", data.user.id);
+
+            // console.log(del);
+
+            this.$q.dialog({
+              title: "Erro",
+              message:
+                "Houve um erro inesperado no cadastro - code " +
+                profile.error.code,
+              ok: "OK",
+              color: "red",
+            });
+          }
+        }
+      }
+    },
+    async google(e) {
+      e.preventDefault();
+      await this.loginWithProvider(e,'google')
+    },
+    async facebook(e) {
+      e.preventDefault();
+     await this.loginWithProvider(e,'facebook')
     },
   },
 };

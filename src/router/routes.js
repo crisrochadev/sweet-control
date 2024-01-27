@@ -9,10 +9,46 @@ const routes = [
         name: "admin",
         component: () => import("pages/IndexPage.vue"),
       },
+      {
+        component:() => import("pages/Despesas.vue"),
+        path: "despesas",
+      },
+      {
+        component:() => import("pages/Entradas.vue"),
+        path: "entradas",
+      },
+      {
+        component:() => import("pages/Graficos.vue"),
+        path: "graficos",
+      },
+      {
+        component:() => import("pages/Calculadora.vue"),
+        path: "calculadora",
+      },
+      {
+        component:() => import("pages/Agenda.vue"),
+        path: "agenda",
+      },
+      {
+        component:() => import("pages/Configuracoes.vue"),
+        path: "configuracoes",
+      },
+      {
+        component:() => import("pages/Perfil.vue"),
+        path: "perfil",
+      },
+      {
+        component:() => import("pages/Sair.vue"),
+        path: "sair",
+      },
     ],
   },
 
-
+  {
+    path: "/reset",
+    name: "reset",
+    component: () => import("pages/ResetPassword.vue"),
+  },
   {
     path: "/login",
     name: "login",

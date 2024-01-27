@@ -1,5 +1,5 @@
 <template>
-  <form class="form-widget" @submit.prevent="updateProfile">
+  <form class="form-widget" @submit.prevent="updateProfile" v-if="auth.session">
     <div>
       <label for="email">Email</label>
       <input id="email" type="text" :value="auth.session.user.email" disabled />

@@ -1,40 +1,34 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header class="bg-white">
       <q-toolbar>
         <q-btn
           flat
           dense
           round
+          color="primary"
           icon="menu"
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+        <q-toolbar-title class="text-primary sweet-font font-extrabold"> <q-icon name="img:/app-2.png" class="mb-2"/> Sweet Control </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <div>
+          <q-btn icon="logout" round flat color="primary" @click="logout" />
+        </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
+    <q-drawer v-model="showMenu" show-if-above bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
+        <q-item-label header> Menu </q-item-label>
 
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
+          :user="user"
         />
       </q-list>
     </q-drawer>
@@ -46,71 +40,87 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { defineComponent, ref } from "vue";
+import EssentialLink from "components/EssentialLink.vue";
+import { supabase } from "src/boot/supabase";
+import { useAuth } from "src/stores/auth";
 
 const linksList = [
   {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
+    title: "Despesas",
+    caption: "Controle seus gastos",
+    icon: "wallet",
+    link: "/despesas",
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: "Entradas",
+    caption: "Controle seus ganhos",
+    icon: "money",
+    link: "/entradas",
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: "Painel do seu controle",
+    caption: "Monitore seus ganhos e gastos",
+    icon: "mdi-chart-bar",
+    link: "/graficos",
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: "Calculadora",
+    caption: "Calcule antes de gastar",
+    icon: "mdi-calculator",
+    link: "/calculadora",
   },
   {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
+    title: "Agenda",
+    caption: "Veja seu eventos e planeje seus gastos",
+    icon: "mdi-calendar-blank-outline",
+    link: "/agenda",
   },
   {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
+    title: "Configurações",
+    caption: "Configure seu app do seu jeito",
+    icon: "settings",
+    link: "/configuracoes",
   },
   {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
+    title: "Sua Conta",
+    caption: "Configure sua conta",
+    icon: "person",
+    link: "/perfil"
+  },
+  {
+    title: "Sair",
+    caption: "Toque se deseja sair",
+    icon: "logout",
+    link: "/sair"
+  },
+];
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
 
   components: {
-    EssentialLink
+    EssentialLink,
   },
 
-  setup () {
-    const leftDrawerOpen = ref(false)
-
+  data() {
+    const auth = useAuth()
     return {
       essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }
-})
+      leftDrawerOpen: false,
+      supabase,
+      showMenu:false,
+      user:auth.session.user
+    };
+  },
+  methods: {
+    async logout() {
+      await supabase.auth.signOut();
+      this.$router.go();
+    },
+    toggleLeftDrawer() {
+      this.showMenu = !this.showMenu
+    },
+  },
+});
 </script>

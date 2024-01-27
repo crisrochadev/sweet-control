@@ -8,7 +8,7 @@
     <div class="w-2/4">
       <div class="w-full h-full p-2 flex flex-col justify-between items-center">
         <q-tab-panels
-          class="w-full relative h-full"
+          class="w-full relative h-full bg-transparent"
           animated
           v-model="tabb"
           transition-next="slide-left"
@@ -22,6 +22,12 @@
           </q-tab-panel>
           <q-tab-panel class="w-full h-full relative" name="recover">
             <slot name="recover" />
+          </q-tab-panel>
+          <q-tab-panel class="w-full h-full relative" name="recover">
+            <slot name="more" />
+          </q-tab-panel>
+          <q-tab-panel class="w-full h-full relative" name="reset">
+            <slot name="reset" />
           </q-tab-panel>
         </q-tab-panels>
       </div>

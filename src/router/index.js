@@ -46,7 +46,7 @@ export default route(function (/* { store, ssrContext } */) {
       auth.session = _session;
     });
 
-    console.log(from)
+
     if (from.name === "admin" || from.name === 'admin_layout') {
       if (!auth.session) {
         next("login");

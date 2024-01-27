@@ -22,7 +22,7 @@
     <q-tab-panel name="forms" class="w-full p-0">
       <div class="w-full h-full p-2 flex flex-col justify-between items-center">
         <q-tab-panels
-          class="w-full h-full relative"
+          class="w-full h-full relative bg-transparent"
           animated
           v-model="tabb"
           transition-next="slide-left"
@@ -36,6 +36,12 @@
           </q-tab-panel>
           <q-tab-panel class="w-full h-full relative" name="recover">
             <slot name="recover" />
+          </q-tab-panel>
+          <q-tab-panel class="w-full h-full relative" name="recover">
+            <slot name="more" />
+          </q-tab-panel>
+          <q-tab-panel class="w-full h-full relative" name="reset">
+            <slot name="reset" />
           </q-tab-panel>
         </q-tab-panels>
       </div>

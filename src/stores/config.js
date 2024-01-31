@@ -1,4 +1,6 @@
+import moment from "../boot/moment";
 import { defineStore } from "pinia";
+
 
 export const useConfig = defineStore("config", {
   state: () => ({
@@ -57,5 +59,20 @@ export const useConfig = defineStore("config", {
         link: "/sair",
       },
     ],
+    month:moment().format('MMMM'),
+    months:[
+      'janeiro',
+      'fevereiro',
+      'março',
+      'abril',
+      'maio',
+      'junho',
+      'julho',
+      'agosto',
+      'setembro',
+      'outubro',
+      'novembro',
+      'dezembro',
+    ]
   }),
 });

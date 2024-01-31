@@ -3,7 +3,7 @@
       readonly
       v-model="value"
       show-value
-      size="150px"
+      size="120px"
       :thickness="0.25"
       :color="value > 75 ? 'red-6' : value > 50 ? 'orange-6' : 'green-6'"
       track-color="green-6"

@@ -1,9 +1,9 @@
 <template>
   <q-layout
     view="lHh lpR fFf"
-    class="flex w-full h-full relative bg-gradient-to-r from-white to-purple-50"
+    class="flex w-full h-full relative bg-gradient-to-r from-purple-50 to-purple-100"
   >
-    <q-header class="bg-transparent text-primary pt-2 ">
+    <q-header class="bg-transparent text-primary pt-2">
       <q-toolbar>
         <q-btn
           v-if="$route.path == '/'"
@@ -12,7 +12,7 @@
           unelevated
           text-color="grey-8"
           icon="menu"
-          size="lg"
+          size="md"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-btn
@@ -20,7 +20,7 @@
           dense
           color="white"
           unelevated
-          size="lg"
+          size="md"
           text-color="grey-8"
           icon="mdi-chevron-left"
           @click="$router.back()"
@@ -44,7 +44,7 @@
         <q-space v-if="$route.path == '/'" />
         <q-toolbar-title
           v-else
-          class="f-normal text-md flex-nowrap text-accent w-full flex-1 gap-2 flex justify-center items-center p-0 "
+          class="f-medium uppercase text-sm flex-nowrap text-accent w-full flex-1 gap-2 flex justify-center items-center p-0"
         >
           {{ $route.meta.title }}
         </q-toolbar-title>
@@ -53,10 +53,11 @@
             v-if="$route.path == '/'"
             dense
             color="white"
+            class="w-10"
             unelevated
             text-color="grey-8"
             icon="search"
-            size="lg"
+            size="md"
             @click="toggleLeftDrawer"
           />
           <q-btn
@@ -65,7 +66,8 @@
             color="white"
             unelevated
             text-color="grey-8"
-            size="lg"
+            size="md"
+            class="w-10"
             icon="mdi-bell-outline"
           >
             <q-badge color="primary" rounded floating>4</q-badge>
@@ -112,77 +114,38 @@
     </q-page-container>
 
     <q-footer
-      class="bg-transparent flex justify-center items-center shadow-md"
+      class="bg-transparent flex justify-center items-center shadow-md h-14"
       v-if="$q.screen.sm || $q.screen.xs"
     >
-      <div
-        class="rounded-full w-12 h-12 absolute z-20 left-2/4 -translate-x-2/4"
-      >
-        <q-btn
-          round
-          icon="add"
-          color="primary"
-          class="w-full h-full"
-          @click="openDialog('bottom')"
-        />
-      </div>
       <q-tabs
-        dense
-        indicator-color="accent"
-        switch-indicator
-        class="w-full shadow-2 rounded-t-md"
-      >
-        <q-route-tab
-          dense
-          exact
-          to="/"
-          color="primary"
-          class="text-accent pt-2"
-        >
-          <div>
-            <q-icon name="img:/chart.svg" size="md" />
-            <p class="text-[10px]">Painel</p>
-          </div>
-        </q-route-tab>
-        <q-route-tab
-          dense
-          exact
-          to="/despesas"
-          class="text-red-600 pt-2"
-          style="padding-right: 35px !important"
-        >
-          <div>
-            <q-icon name="img:/expense.svg" size="md" />
-            <p class="text-[10px]">Despesas</p>
-          </div>
-        </q-route-tab>
+        active-class="text-accent  bg-transparent"
+        class="text-accent bg-transparent"
 
-        <q-route-tab
-          dense
-          exact
-          to="/entradas"
-          class="text-green-600 pt-2"
-          style="padding-left: 40px !important"
-        >
-          <div>
-            <q-icon name="img:/incoming.svg" size="md" />
-            <p class="text-[10px]">Entradas</p>
-          </div>
+        dense
+      >
+        <q-route-tab exact to="/" text-color="accent">
+          <q-icon name="mdi-chart-arc" size="lg" />
+          <p class="text-[10px]">Painel</p>
         </q-route-tab>
-        <q-route-tab dense exact to="/perfil" class="text-accent pt-2">
-          <div>
-            <q-avatar>
-              <q-icon
-                :name="
-                  user && user.user_metadata && user.user_metadata.avatar_url
-                    ? 'img:' + user.user_metadata.avatar_url
-                    : 'img:/user.svg'
-                "
-                size="md"
-              />
-            </q-avatar>
-            <p class="text-[10px]">Perfil</p>
-          </div>
+        <q-route-tab exact to="/despesas" text-color="grey-6">
+          <q-icon name="img:/expense.svg" size="lg" />
+          <p class="text-[10px]">Despesas</p>
+        </q-route-tab>
+        <q-btn icon="add" class="h-12 w-12" size="md" round color="primary" @click="openDialog('bottom')"/>
+        <q-route-tab exact to="/entradas" text-color="grey-6">
+          <q-icon name="img:/incoming.svg" size="lg" />
+          <p class="text-[10px]">Entradas</p>
+        </q-route-tab>
+        <q-route-tab exact to="/perfil" text-color="grey-6">
+          <q-avatar
+            round
+            size="md"
+            v-if="user.user_metadata && user.user_metadata.avatar_url"
+          >
+            <q-img :src="user.user_metadata.avatar_url" />
+          </q-avatar>
+          <q-icon size="lg" name="mdi-account" v-else />
+          <p class="text-[10px]">Perfil</p>
         </q-route-tab>
       </q-tabs>
     </q-footer>

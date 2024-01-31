@@ -41,6 +41,10 @@ const routes = [
         component:() => import("pages/Sair.vue"),
         path: "sair",
       },
+      {
+        component:() => import("pages/NewControl.vue"),
+        path: "novo",
+      },
     ],
   },
 

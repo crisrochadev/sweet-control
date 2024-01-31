@@ -12,6 +12,8 @@ export default {
       purple: colors.violet,
       yellow: colors.amber,
       pink: colors.fuchsia,
+      white: colors.white,
+      red: colors.red,
     },
     extend: {},
   },

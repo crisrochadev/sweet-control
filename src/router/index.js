@@ -54,7 +54,9 @@ export default route(function (/* { store, ssrContext } */) {
       } else {
         next();
       }
-    } else {
+    } else if(from.name === "login" && auth.session) {
+      next("/")
+    }else {
       next();
     }
   });

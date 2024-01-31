@@ -40,6 +40,7 @@
     <q-card-section class="w-full h-[150px]">
       <div class="relative w-full h-[1px] bg-gray-200">
         <span
+          v-if="tabb !== 'recover'"
           class="absolute -top-3 left-2/4 -translate-x-2/4 bg-white text-sw-primary"
           >ou</span
         >
@@ -52,6 +53,7 @@
           text-color="red-8"
           outline
           @click="google"
+          v-if="tabb !== 'recover'"
         />
         <q-btn
           icon="mdi-facebook"
@@ -60,6 +62,7 @@
           outline
           class="h-10 w-10 lg:h-14 lg:w-14"
           @click="facebook"
+          v-if="tabb !== 'recover'"
         />
       </div>
     </q-card-section>
@@ -83,38 +86,38 @@ export default {
       },
     },
   },
-  data(){
-    const auth = useAuth()
-    return{
+  data() {
+    const auth = useAuth();
+    return {
       auth,
-      time:null,
-      dial:null
-    }
+      time: null,
+      dial: null,
+    };
   },
   methods: {
-    show(){
+    show() {
       this.$q.loading.show({
-          spinner: QSpinnerPie,
-          spinnerColor: 'primary',
-          spinnerSize: 140,
-          backgroundColor: 'accent',
-          message: 'Aguarde...',
-          messageColor: 'primary'
-        })
+        spinner: QSpinnerPie,
+        spinnerColor: "primary",
+        spinnerSize: 140,
+        backgroundColor: "accent",
+        message: "Aguarde...",
+        messageColor: "primary",
+      });
     },
-    hide(){
-      this.$q.loading.hide()
+    hide() {
+      this.$q.loading.hide();
     },
     async loginWithProvider(e, provider) {
       e.preventDefault();
 
-      this.show()
+      this.show();
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: provider,
       });
 
-      this.hide()
-      this.$q.loading.hide()
+      this.hide();
+      this.$q.loading.hide();
       if (error) {
         if (error.toString().includes(" Email rate limit exceeded")) {
           this.$q.dialog({
@@ -219,11 +222,11 @@ export default {
     },
     async google(e) {
       e.preventDefault();
-      await this.loginWithProvider(e,'google')
+      await this.loginWithProvider(e, "google");
     },
     async facebook(e) {
       e.preventDefault();
-     await this.loginWithProvider(e,'facebook')
+      await this.loginWithProvider(e, "facebook");
     },
   },
 };

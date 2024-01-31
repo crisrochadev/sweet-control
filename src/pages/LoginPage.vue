@@ -2,19 +2,19 @@
   <div class="w-full h-full bg-gradient-to-r from-purple-50 to-purple-100">
     <component :is="current" v-model:tab="tab">
       <template #header>
-        <div class="w-full flex-1 flex justify-center flex-col items-center">
-          <img src="/Finances.png" class="object-cover" />
+        <div class="w-10/12 flex-1 flex justify-center flex-col items-center">
+          <div class=" relative w-5/12">
+            <img src="/logo.svg" class="object-cover w-full h-full" />
+          </div>
           <div class="flex items-center w-full justify-center gap-2">
-            <img src="/app-2.png" class="w-[80px] md:w-[120px]" />
             <h1
-              class="sweet-font uppercase text-3xl md:text-[60px] md:leading-[50px] font-[900] text-primary"
+              class="mt-4 sweet-font uppercase text-4xl md:text-[60px] md:leading-[50px] font-[900] text-primary"
             >
-              <p>Sweet</p>
-              <p>Control</p>
+              SweetControl
             </h1>
           </div>
           <p
-            class="text-2xl md:text-2xl leading-7 text-gray-600 mt-2 text-center"
+            class="text-2xl md:leading-7 leading-6 text-gray-600 font-light mt-2 text-center"
           >
             Controle suas despesas e receitas de forma simples
           </p>

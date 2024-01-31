@@ -15,7 +15,7 @@
           color="primary"
           @click="model = 'forms'"
           class="mb-8"
-          icon="img:/app-2.png"
+          icon="img:/logo.png"
         />
       </div>
     </q-tab-panel>

@@ -1,6 +1,6 @@
 <template>
-  <q-dialog eamless :position="position" persistent>
-    <q-card style="width: 90dvw" class="bg-purple-1">
+  <q-dialog   :position="position" persistent>
+    <q-card style="width: 700px; max-width: 95vw;border-radius:10px !important" class="bg-white">
       <q-card-section
         class="flex justify-between h-14 items-center py-0 px-2"
         header
@@ -14,12 +14,10 @@
           "
         />
 
-        <div class="text-h6 uppercase font-bold text-sw-primary flex gap-2">
+        <div class="text-h6 uppercase f-medium  flex gap-2">
           <q-tabs
             v-model="store.control.type"
-            :active-color="
-              store.control.type == 'expense' ? 'red-6' : 'green-6'
-            "
+            :active-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
           >
             <q-tab name="expense" label="Despesa" />
             <q-tab name="incoming" label="Receita" />
@@ -32,7 +30,7 @@
           round
           flat
           v-close-popup
-          color="primary"
+          :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
         />
       </q-card-section>
 
@@ -77,7 +75,7 @@
             dense
           >
             <template #after>
-              <q-btn icon="event" round color="primary">
+              <q-btn icon="event" class="full-height w-10" color="white" text-color="accent" unelevated>
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -155,13 +153,11 @@
             v-model="store.control.repeat"
             spread
             dense
+            flat
             size="12px"
-            :toggle-color="
-              store.control.type == 'expense' ? 'red-6' : 'green-6'
-            "
-            toggle-text-color="white"
-            :color="store.control.type == 'expense' ? 'red-1' : 'green-1'"
-            text-color="primary"
+            color="white"
+            text-color="accent"
+            :toggle-text-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
             class="h-10"
             :options="[
               { label: 'Vez', value: 'unique', icon: 'mdi-numeric-1' },
@@ -198,20 +194,13 @@
           />
 
           <div class="flex gap-2 justify-end items-center mt-4">
-            <q-btn
-              icon="arrow_left"
-              :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
-              label="Cancelar"
-              v-close-popup
-              size="md"
-              outline
-            />
-            <q-btn
+               <q-btn
               icon="save"
               :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
               label="Salvar"
               type="submit"
-              size="md"
+              size="lg"
+              class="full-width rounded-lg"
             />
           </div>
         </q-form>

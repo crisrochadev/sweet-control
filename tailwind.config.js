@@ -4,9 +4,9 @@ export default {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      "sw-primary": "#b117e1",
-      "sw-secondary": "#680f9c",
-      "sw-accent": "#9C27B0",
+      "sw-primary": "#ea5b5f",
+      "sw-secondary": "#f8c6ba",
+      "sw-accent": "#f8c6ba",
       gray: colors.gray,
       green: colors.emerald,
       purple: colors.violet,

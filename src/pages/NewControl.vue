@@ -1,130 +1,248 @@
 <template>
-  <q-dialog>
-    <q-card style="width: 100dvw">
-      <q-card-section
-        class="flex justify-between"
-        :class="[type == 'expense' ? 'bg-orange' : 'bg-green']"
-      >
-        <div class="text-h6 uppercase font-bold text-white">
-          {{ type == "expense" ? "Nova Despesa" : "Nova Entrada" }}
-        </div>
-        <q-btn icon="close" flat dense round v-close-popup color="white" />
-      </q-card-section>
+  <q-page class="w-dvw h-full">
+    <q-form
+      class="flex flex-col justify-between gap-2  w-full h-full p-4"
+      @submit="addControl"
+    >
+      <div class="w-full flex flex-col gap-4">
+        <q-input
+          class="font-bold"
+          input-class="text-gray-800"
+          color="primary"
+          label="Titulo"
+          outlined
+          v-model="store.control.title"
+          required
+          dense
+        />
+        <q-input
+          class="uppercase font-bold"
+          input-class="text-gray-800"
+          color="primary"
+          label="Valor"
+          outlined
+          v-model="store.control.ammount"
+          required
+          dense
+          prefix="R$"
+          inputmode="numeric"
+          reverse-fill-mask
+          mask="##,##"
+        />
+        <q-input
+          class="uppercase font-bold"
+          input-class="text-gray-800"
+          color="primary"
+          label="Data"
+          outlined
+          v-model="store.control.duedate"
+          required
+          inputmode="numeric"
+          mask="##/##/####"
+          dense
+        >
+          <template #after>
+            <q-btn icon="event" round color="primary">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date
+                  v-model="store.control.duedate"
+                  mask="DD/MM/YYYY"
+                  minimal
+                  :locale="{
+                    days: [
+                      'domingo',
+                      'segunda',
+                      'terça',
+                      'quarta',
+                      'quinta',
+                      'sexta',
+                      'sábado',
+                    ],
+                    daysSgort: [
+                      'dom',
+                      'seg',
+                      'ter',
+                      'quar',
+                      'qui',
+                      'sex',
+                      'sab',
+                    ],
+                    months: [
+                      'janeiro',
+                      'fevereiro',
+                      'março',
+                      'abril',
+                      'maio',
+                      'junho',
+                      'julho',
+                      'agosto',
+                      'setembro',
+                      'outubro',
+                      'novembro',
+                      'dezembro',
+                    ],
+                    monthsShort: [
+                      'jan',
+                      'fev',
+                      'mar',
+                      'abr',
+                      'mai',
+                      'jun',
+                      'jul',
+                      'ago',
+                      'set',
+                      'out',
+                      'nov',
+                      'dez',
+                    ],
+                  }"
+                >
+                  <div class="row items-center justify-end q-gutter-sm">
+                    <q-btn label="Cancel" color="primary" flat v-close-popup />
+                    <q-btn label="OK" color="primary" flat v-close-popup />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-btn>
+          </template>
+        </q-input>
 
-      <q-separator />
+        <q-btn-toggle
+          v-model="store.control.repeat"
+          spread
+          dense
+          size="12px"
+          :toggle-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
+          toggle-text-color="white"
+          :color="store.control.type == 'expense' ? 'red-1' : 'green-1'"
+          text-color="primary"
+          class="h-10"
+          :options="[
+            { label: 'Vez', value: 'unique', icon: 'mdi-numeric-1' },
+            {
+              label: 'Parcelado',
+              value: 'installments',
+              icon: 'fas fa-divide',
+            },
+            { label: 'Fixo', value: 'fixed', icon: 'mdi-infinity' },
+          ]"
+        />
 
-      <q-card-section style="max-height: 90vh; width: 100%" class="scroll">
-        <q-form class="flex flex-col gap-2">
-          <q-input
-            class="uppercase font-bold text-sw-primary"
-            label="Titulo"
-            outlined
-            color="orange"
-            required
-            dense
-          />
-          <q-input
-            class="uppercase font-bold text-sw-primary"
-            label="Valor"
-            outlined
-            color="orange"
-            mask="##,##"
-            reverse-fill-mask
-            required
-            prefix="R$"
-            dense
-          />
-          <q-input
-            class="uppercase font-bold text-sw-primary"
-            label="Data"
-            outlined
-            color="orange"
-            dense
-          >
-            <!-- <q-date v-model="form.duedate" /> -->
-          </q-input>
+        <q-input
+          class="uppercase font-bold"
+          input-class="text-gray-800"
+          color="primary"
+          outlined
+          v-model="store.control.installments"
+          label="Numero de parcelas"
+          v-if="store.control.repeat == 'installments'"
+          dense
+          type="number"
+        />
 
-          <q-btn-toggle
-            v-model="form.repeat"
-            spread
-            dense
-            glossy
-            size="12px"
-            toggle-color="orange"
-            color="white"
-            text-color="orange"
-            class="h-10"
-            :options="[
-              { label: 'Uma Vez', value: 'unique' },
-              { label: 'Parcelado', value: 'installments' },
-              { label: 'Fixo', value: 'fixed' },
-            ]"
-          />
-          <q-input
-            class="uppercase font-bold text-sw-primary"
-            label="Numero de parcelas"
-            v-model="form.installments"
-            v-if="form.repeat == 'installments'"
-            outlined
-            color="orange"
-            dense
-            type="number"
-          />
+        <q-input
+          class="font-bold"
+          input-class="text-gray-800"
+          color="primary"
+          label="Descrição"
+          outlined
+          v-model="store.control.description"
+          dense
+          type="textarea"
+        />
+      </div>
 
-          <q-input
-            label="Descrição"
-            class="uppercase font-bold text-sw-primary"
-            v-model="form.description"
-            flat
-            outlined
-            color="orange"
-            dense
-            type="textarea"
-          />
+      <div class="flex gap-2 justify-center items-center mt-4">
 
-          <div class="flex gap-2 justify-end items-center mt-4">
-            <q-btn
-              icon="save"
-              label="Salvar"
-              color="orange"
-              glossy
-              type="submit"
-            />
-          </div>
-        </q-form>
-      </q-card-section>
-    </q-card>
-  </q-dialog>
+        <q-btn
+          class="full-width rounded-lg"
+          :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
+          label="Salvar"
+          type="submit"
+          size="lg"
+        />
+      </div>
+    </q-form>
+  </q-page>
 </template>
 <script>
+import { useQuasar } from "quasar";
+import { useControl } from "src/stores/control";
+
 export default {
-  props: ["type"],
   data() {
+    const store = useControl();
+    const $q = useQuasar();
     return {
-      form: {
-        userId: null,
-        type: "expense",
-        installments: false,
-        repeat: "unique",
-        ammount: null,
-        duedate: null,
-        title: null,
-        comment: null,
-        description: null,
-        installments: null,
-        currentInstallment: null,
-        currentMonth: null,
-        completed: false,
-        repeatId: null,
-        currentYear: null,
-        recalculate_id: null,
-        haveRecalculate: null,
-      },
+      store,
+      $q,
     };
+  },
+
+  mounted() {
+    console.log(this.store);
   },
   watch: {
     repeat(newvalue) {
-      this.form.installments = newvalue.repeat == "installments";
+      this.store.control.installments = newvalue.repeat == "installments";
+    },
+  },
+  methods: {
+    // updateProxy() {
+    //   this.store.control.duedate = date.value;
+    // },
+
+    // save() {
+    //   date.value = proxyDate.value;
+    // },
+    async addControl(e) {
+      e.preventDefault();
+      this.$q.loading.show({
+        spinner: QSpinnerPie,
+        spinnerColor: "primary",
+        spinnerSize: 140,
+        backgroundColor: "accent",
+        message: "Aguarde...",
+        messageColor: "primary",
+      });
+      const control = this.store.editedControl();
+      const error = await this.store.addControl(control);
+
+      this.$q.loading.hide();
+      if (!error) {
+        this.$q.notify({
+          title: "Sucesso",
+          message:
+            (this.store.control.type == "expense" ? "Despesa " : "Receita ") +
+            "salva com sucesso",
+          icon: "check",
+          color: "green",
+          position: "top",
+          timeout: 2000,
+          closeBtn: "X",
+        });
+        this.store.control = JSON.parse(
+          JSON.stringify(this.store.defaultControl)
+        );
+      } else {
+        {
+          this.$q.notify({
+            title: "Atenção",
+            message:
+              (this.store.control.type == "expense" ? "Despesa " : "Receita ") +
+              " não pode ser salva, verifique os dados ou contate o suporte.",
+            icon: "error",
+            color: "red",
+            position: "top",
+            timeout: 2000,
+            closeBtn: "X",
+          });
+        }
+      }
     },
   },
 };

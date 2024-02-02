@@ -6,18 +6,22 @@
         header
       >
         <q-icon
-          size="sm"
+          size="md"
+          :color="store.control.type == 'expense'
+              ? 'red'
+              : 'green'"
           :name="
             store.control.type == 'expense'
               ? 'fa-solid fa-share-from-square'
               : 'fa-solid fa-hand-holding-dollar'
           "
+          class="ml-4"
         />
 
         <div class="text-h6 uppercase f-medium  flex gap-2">
           <q-tabs
             v-model="store.control.type"
-            :active-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
+            active-color="primary"
           >
             <q-tab name="expense" label="Despesa" />
             <q-tab name="incoming" label="Receita" />
@@ -31,7 +35,7 @@
           round
           flat
           v-close-popup
-          :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
+          color="primary"
         />
       </q-card-section>
 
@@ -79,7 +83,7 @@
             clearable
           >
             <template #after>
-              <q-btn icon="event" class="full-height w-10" color="white" text-color="dark" unelevated>
+              <q-btn icon="event" class="full-height w-10" color="primary" text-color="white" unelevated>
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -162,7 +166,7 @@
             size="12px"
             color="white"
             text-color="a"
-            :toggle-text-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
+            toggle-text-color="primary"
             class="h-10"
             :options="[
               { label: 'Vez', value: 'unique', icon: 'mdi-numeric-1' },
@@ -201,14 +205,7 @@
           />
 
           <div class="flex gap-2 justify-end items-center mt-4">
-               <q-btn
-              icon="save"
-              :color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
-              label="Salvar"
-              type="submit"
-              size="lg"
-              class="full-width rounded-lg"
-            />
+               <q-btn label="Salvar" class="full-width" color="primary" size="lg" />
           </div>
         </q-form>
       </q-card-section>

@@ -20,10 +20,10 @@ export const useControl = defineStore("control", {
         description: null,
         installments: null,
         currentInstallment: null,
-        currentMonth: null,
+        currentMonth: moment().format('MM'),
         completed: false,
         repeatId: null,
-        currentYear: null,
+        currentYear: moment().format('YYYY'),
         recalculate_id: null,
         haveRecalculate: null,
       },
@@ -110,7 +110,7 @@ export const useControl = defineStore("control", {
         const { data, error } = await supabase
             .from("allcontrol")
             .select()
-            .match({ userId: this.auth.session.user.id, type, type })
+            .match({ userId: this.auth.session.user.id, type:type })
             .or(
                 `repeat.eq.fixed,and(currentMonth.eq.${this.currentMonth},currentYear.eq.${this.currentYear})`
             );
@@ -132,7 +132,11 @@ export const useControl = defineStore("control", {
 
     async getControls() {
       this.expenses = await this.getAllControls('expense');
-      this.expenses = await this.getAllControls('incoming');
+      this.incomings = await this.getAllControls('incoming');
+
+
+      console.log(this.expenses)
+      console.log(this.incomings)
     },
   },
 });

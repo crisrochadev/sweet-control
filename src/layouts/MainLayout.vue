@@ -1,19 +1,19 @@
 <template>
   <q-layout
     view="lHh lpR fFf"
-    class="flex w-full h-full relative "
+    class="flex w-full h-full relative"
     :class="{
-      'dark': dark,
-      'bg-purple-50':!dark,
+      dark: dark,
+      'bg-purple-50': !dark,
       'bg-dark-page': dark,
     }"
   >
     <q-header class="bg-transparent text-prim pt-2">
-      <q-toolbar>
+      <q-toolbar class="flex justify-between items-center">
         <q-btn
           v-if="$route.path == '/'"
           dense
-          :color="dark ? 'grey-9' : 'white'"
+          :color="dark ? 'dark' : 'white'"
           :text-color="dark ? 'grey-2' : 'grey-8'"
           unelevated
           icon="menu"
@@ -23,7 +23,7 @@
         <q-btn
           v-if="$route.path == '/'"
           dense
-          :color="dark ? 'grey-9' : 'white'"
+          :color="dark ? 'dark' : 'white'"
           :text-color="dark ? 'grey-2' : 'grey-8'"
           unelevated
           icon="mdi-compare"
@@ -34,7 +34,7 @@
         <q-btn
           v-else
           dense
-          :color="dark ? 'grey-9' : 'white'"
+          :color="dark ? 'dark' : 'white'"
           :text-color="dark ? 'grey-2' : 'grey-8'"
           unelevated
           size="md"
@@ -57,29 +57,47 @@
           @click="openDialog('top')"
           v-if="!$q.screen.xs && !$q.screen.sm"
         /> -->
-        <q-space v-if="$route.path == '/'" />
+        <q-space v-if="$route.path == '/' && !openSearch" />
         <q-toolbar-title
           v-else
           class="f-medium uppercase text-sm flex-nowrap text-a w-full flex-1 gap-2 flex justify-center items-center p-0"
         >
+          <transition
+            enter-active-class="animated lightSpeedInRight"
+            leave-active-class="animated lightSpeedInLeft"
+          >
+            <q-select
+              v-if="$route.path == '/' && openSearch"
+              class="mx-2 w-[90%]"
+              dense
+              outlined
+              placeholder="O que esta procurando?"
+              color="primary"
+              v-model="search"
+              ref="input_search"
+              :options="searchs"
+              use-input
+            />
+          </transition>
+
           {{ $route.meta.title }}
         </q-toolbar-title>
         <div class="flex gap-2">
           <q-btn
             v-if="$route.path == '/'"
             dense
-            :color="dark ? 'grey-9' : 'white'"
+            :color="dark ? 'dark' : 'white'"
             :text-color="dark ? 'grey-2' : 'grey-8'"
             class="w-10"
             unelevated
             icon="search"
             size="md"
-            @click="toggleLeftDrawer"
+            @click="openSearch = !openSearch"
           />
           <q-btn
             v-if="$route.path == '/'"
             dense
-            :color="dark ? 'grey-9' : 'white'"
+            :color="dark ? 'dark' : 'white'"
             :text-color="dark ? 'grey-2' : 'grey-8'"
             unelevated
             size="md"
@@ -91,10 +109,9 @@
           <q-btn
             v-else
             dense
-            :color="dark ? 'grey-9' : 'white'"
+            :color="dark ? 'dark' : 'white'"
             :text-color="dark ? 'grey-2' : 'grey-8'"
             unelevated
-
             size="md"
             icon="mdi-dots-horizontal"
             @click="toggleLeftDrawer"
@@ -106,8 +123,8 @@
     <q-drawer v-model="leftDrawerOpen">
       <div class="w-full flex justify-end">
         <q-btn
-          color="white"
-          text-color="p"
+          :color="$q.dark.isActive ? 'dark' : 'white'"
+          text-color="primary"
           unelevated
           icon="close"
           @click="leftDrawerOpen = false"
@@ -135,30 +152,58 @@
       v-if="$q.screen.sm || $q.screen.xs"
     >
       <q-tabs
-      switch-indicator
+        switch-indicator
+        indicator-color="primary"
         active-class="text-a  bg-transparent"
-        class="text-a bg-transparent h-20"
+        class="text-a bg-transparent h-20 pt-2"
         dense
       >
-        <q-route-tab exact to="/" >
-          <q-icon name="mdi-chart-arc" size="lg" :color="dark ? 'grey-3' : 'dark'"/>
-          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Painel</p>
+        <q-route-tab exact to="/">
+          <q-icon
+            name="mdi-chart-arc"
+            size="md"
+            :color="dark ? 'grey-3' : 'dark'"
+          />
+          <p
+            class="text-[10px] mt-1"
+            :class="dark ? 'text-zinc-300' : 'text-dark'"
+          >
+            Painel
+          </p>
         </q-route-tab>
         <q-route-tab exact to="/despesas" text-color="grey-6">
-          <q-icon name="fa-solid fa-share-from-square" size="md" :color="dark ? 'grey-3' : 'dark'"/>
-          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Despesas</p>
+          <q-icon
+            name="fa-solid fa-share-from-square"
+            size="sm"
+            :color="dark ? 'grey-3' : 'dark'"
+          />
+          <p
+            class="text-[10px] mt-1"
+            :class="dark ? 'text-zinc-300' : 'text-dark'"
+          >
+            Despesas
+          </p>
         </q-route-tab>
         <q-btn
           icon="add"
-          class="h-14 w-14 -mt-2"
+          class="h-12 w-12 -mt-2"
           size="md"
           round
           color="primary"
           @click="openDialog('bottom')"
         />
         <q-route-tab exact to="/entradas" text-color="grey-6">
-          <q-icon name="fa-solid fa-hand-holding-dollar" size="md" :color="dark ? 'grey-3' : 'dark'"/>
-          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Entradas</p>
+          <q-icon
+            name="fa-solid fa-hand-holding-dollar"
+            size="sm"
+            :color="dark ? 'grey-3' : 'dark'"
+          />
+          <p
+            class="text-[10px] mt-1"
+            :class="dark ? 'text-zinc-300' : 'text-dark'"
+          >
+            Entradas
+          </p>
         </q-route-tab>
         <q-route-tab exact to="/perfil" text-color="grey-6">
           <q-avatar
@@ -168,8 +213,13 @@
           >
             <q-img :src="user.user_metadata.avatar_url" />
           </q-avatar>
-          <q-icon size="lg" name="mdi-account" v-else />
-          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Perfil</p>
+          <q-icon size="md" name="mdi-account" v-else />
+          <p
+            class="text-[10px] mt-1"
+            :class="dark ? 'text-zinc-300' : 'text-dark'"
+          >
+            Perfil
+          </p>
         </q-route-tab>
       </q-tabs>
     </q-footer>
@@ -252,7 +302,7 @@ export default defineComponent({
   data() {
     const auth = useAuth();
     const $q = useQuasar();
-    const store = useControl()
+    const store = useControl();
     return {
       essentialLinks: linksList,
       $q,
@@ -263,9 +313,45 @@ export default defineComponent({
       user: auth.session.user,
       fab: false,
       openNew: false,
+      openSearch: false,
+      search: null,
+      searchs: [],
     };
   },
+  watch: {
+    search() {
+      this.filter();
+      console.log(this.searchs);
+    },
+  },
   methods: {
+    filter() {
+      {
+        const conteudo = document.getElementById("sweet");
+        const textos = [];
+
+        if (conteudo) {
+          const elementos = document.querySelectorAll("div");
+          elementos.forEach((elemento) => {
+            if (
+              elemento.innerText &&
+              elemento.innerText
+                .toLowerCase()
+                .includes(this.search.toLowerCase())
+            ) {
+              const pattern = /^[a-zA-Z0-9 ]*$/;
+              if (
+                !textos.includes(elemento.innerText) &&
+                pattern.test(elemento.innerText)
+              )
+                textos.push(elemento.innerText);
+            }
+          });
+        }
+
+        this.searchs = textos;
+      }
+    },
     async logout() {
       await supabase.auth.signOut();
       this.$router.go();
@@ -289,8 +375,8 @@ export default defineComponent({
       return this.$q.dark.isActive;
     },
   },
-  async mounted(){
-    await this.store.getControls()
-  }
+  async mounted() {
+    await this.store.getControls();
+  },
 });
 </script>

@@ -15,7 +15,7 @@ export default defineComponent({
   methods: {
     getStyle() {
 
-      return { width: '100dvw', height: '100dvh', position:'relative', overflow:'hidden' };
+      return { width: '100dvw', height: '100svh', position:'relative', overflow:'hidden' };
     },
   },
 });

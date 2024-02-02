@@ -60,7 +60,7 @@
         <q-space v-if="$route.path == '/' && !openSearch" />
         <q-toolbar-title
           v-else
-          class="f-medium uppercase text-sm flex-nowrap text-a w-full flex-1 gap-2 flex justify-center items-center p-0"
+          class="f-medium uppercase text-sm flex-nowrap text-accent f-bold w-full flex-1 gap-2 flex justify-center items-center p-0"
         >
           <transition
             enter-active-class="animated lightSpeedInRight"
@@ -116,6 +116,15 @@
             icon="mdi-dots-horizontal"
             @click="toggleLeftDrawer"
           />
+          <q-btn
+          v-if="$q.screen.md || $q.screen.lg || $q.screen.xl"
+          icon="add"
+          class="h-12 w-12 "
+          size="md"
+          round
+          color="primary"
+          @click="openDialog('top')"
+        />
         </div>
       </q-toolbar>
     </q-header>
@@ -140,10 +149,8 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="h-full relative w-screen">
-      <q-scroll-area class="h-full w-full mt-0">
+    <q-page-container class="h-full relative w-screen ">
         <router-view />
-      </q-scroll-area>
     </q-page-container>
 
     <q-footer

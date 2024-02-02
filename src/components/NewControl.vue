@@ -23,8 +23,8 @@
             v-model="store.control.type"
             active-color="primary"
           >
-            <q-tab name="expense" label="Despesa" />
-            <q-tab name="incoming" label="Receita" />
+            <q-tab name="expense" label="Despesa" @click="store.control.type = 'expense'"/>
+            <q-tab name="incoming" label="Receita" @click="store.control.type = 'incoming'"/>
           </q-tabs>
         </div>
         <q-btn
@@ -205,7 +205,7 @@
           />
 
           <div class="flex gap-2 justify-end items-center mt-4">
-               <q-btn label="Salvar" class="full-width" color="primary" size="lg" />
+               <q-btn label="Salvar" class="full-width" color="primary" size="lg" type="submit"/>
           </div>
         </q-form>
       </q-card-section>
@@ -276,6 +276,7 @@ export default {
           closeBtn: 'X',
         });
         this.store.control = JSON.parse(JSON.stringify(this.store.defaultControl))
+        this.store.getControls()
       } else {
         {
           this.$q.notify({

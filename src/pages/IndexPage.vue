@@ -1,28 +1,28 @@
 <template>
-  <q-page class="w-full h-auto flex flex-col items-start px-2">
-    <div class="w-full h-2/5 p-2 flex justify-between items-center gap-2">
-      <q-btn-group class="w-full h-10" flat color="transparent">
+  <q-page
+    class="w-full h-full p-2 grid"
+    :class="{ custom: $q.dark.isActive }"
+    :style="{
+      gridTemplateRows: '42% 34% 24%',
+      gridTemplateColumns: '1fr',
+    }"
+  >
+    <div
+      class="py-4 rounded-md w-full p-2 flex justify-between items-center gap-2 relative mt-2"
+      :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'"
+    >
+      <q-btn-group class="absolute px-3 -top-4 left-2/4 -translate-x-2/4">
         <q-btn
-          icon="arrow_left"
-          color="white"
-          flat
-          class="w-10 text-lg"
-          text-color="accent"
+          icon="mdi-chevron-left"
+          dense
+          unelevated
+          :color="$q.dark.isActive ? 'dark' : 'white'"
           @click="previous"
         />
-        <q-btn
-          icon="undo"
-          color="white"
-          flat
-          class="w-10 text-lg"
-          text-color="accent"
-          @click="current"
-        />
         <q-btn-dropdown
-          class="w-[calc(100%_-_7.5rem)]"
-          flat
-          color="white"
-          text-color="accent"
+          dense
+          unelevated
+          :color="$q.dark.isActive ? 'dark' : 'white'"
           :label="store.month"
         >
           <q-list class="max-h-[300px]" separator dense>
@@ -41,139 +41,165 @@
           </q-list>
         </q-btn-dropdown>
         <q-btn
-          icon="arrow_right"
-          color="white"
-          text-color="accent"
-          flat
-          class="w-10 text-lg"
+          icon="mdi-chevron-right"
+          dense
+          unelevated
+          :color="$q.dark.isActive ? 'dark' : 'white'"
           @click="next"
         />
       </q-btn-group>
-      <div class="w-[140px] h-[140px]  flex justify-center items-center">
-        <PaySvg :expense="5000" :incoming="4500" />
+      <div class="w-[140px] h-[140px] flex justify-center items-center">
+        <PaySvg :expense="5000" :incoming="4586.3" />
       </div>
-      <div
-        class="w-[calc(100%_-_150px)] p-2 flex flex-col gap-4  h-[140px]"
-      >
-        <q-card class="h-full">
-          <q-card-section header class="w-full text-center f-medium text-accent">
+      <div class="w-[calc(100%_-_150px)] p-2 flex flex-col gap-4 h-[140px]">
+        <q-card class="h-full" flat>
+          <q-card-section
+            header
+            class="w-full text-center f-medium"
+            :class="[$q.dark.isActive ? 'text-zinc-100' : 'text-accent']"
+          >
             SALDO
           </q-card-section>
-          <q-card-section  class="w-full text-center f-black text-accent text-lg" :class="saldo <= 0 ? 'text-red-6' : 'text-green-6'">
-            R$ {{ saldo.toLocaleString('pt-BR') }}
+          <q-card-section
+            class="w-full text-center f-black text-accent text-md"
+            :class="saldo <= 0 ? 'text-red-6' : 'text-green-6'"
+          >
+            R$ {{ saldo}}
           </q-card-section>
         </q-card>
       </div>
 
       <div
-        class="flex  w-full h-18 flex-nowrap items-center justify-center gap-2"
+        class="grid grid-cols-2 px-2 w-full h-18 flex-nowrap items-center justify-center gap-2"
       >
-        <q-card>
+        <q-card flat>
           <q-item>
             <q-item-section side class="f-bold">R$</q-item-section>
             <q-item-section>
               <q-item-label caption class="f-bold">Entradas</q-item-label>
               <q-item-label class="f-bold text-green-600 text-lg">
                 {{
-                  totalIncoming.toLocaleString("pt-BR").length > 10
-                    ? totalIncoming.toLocaleString("pt-BR").substring(0, 10) +
-                      "..."
-                    : totalIncoming.toLocaleString("pt-BR")
+                 totalExpense
                 }}
               </q-item-label>
             </q-item-section>
           </q-item>
         </q-card>
-        <q-card>
+        <q-card flat>
           <q-item>
             <q-item-section side class="f-bold">R$</q-item-section>
             <q-item-section>
               <q-item-label caption class="f-bold">Despesas</q-item-label>
               <q-item-label class="f-bold text-red-600 text-lg">
                 {{
-                  totalExpense.toLocaleString("pt-BR").length > 10
-                    ? totalExpense.toLocaleString("pt-BR").substring(0, 10) +
-                      "..."
-                    : totalExpense.toLocaleString("pt-BR")
+                 totalExpense
                 }}
               </q-item-label>
             </q-item-section>
           </q-item>
         </q-card>
       </div>
+    </div>
 
-      <div
-        class="w-full  h-2/4 p-2 flex justify-between items-center gap-2"
+    <div class="w-full py-2 flex justify-between items-center gap-2">
+      <p
+        class="uppercase f-bold"
+        :class="[$q.dark.isActive ? 'text-zinc-100' : 'text-accent']"
       >
-        <q-card class="w-full">
-          <q-item>
-            <q-item-section side>
-              <q-icon name="img:/expense.svg" size="lg" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label caption>R${{ totalExpense }}</q-item-label>
-              <q-item-label class="uppercase f-bold text-accent"
-                >Ver todas as Despesas</q-item-label
-              >
-            </q-item-section>
-            <q-item-section side>
-              <q-icon name="arrow_right" size="md" color="red-6" />
-            </q-item-section>
-          </q-item>
-        </q-card>
-        <q-card class="w-full">
-          <q-item>
-            <q-item-section side>
-              <q-icon name="img:/incoming.svg" size="lg" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label caption>R${{ totalIncoming }}</q-item-label>
-              <q-item-label class="uppercase f-bold text-accent"
-                >Ver todas as Entradas</q-item-label
-              >
-            </q-item-section>
-            <q-item-section side>
-              <q-icon name="arrow_right" size="md" color="green-6" />
-            </q-item-section>
-          </q-item>
-        </q-card>
-        <q-card class="w-full">
-          <q-item>
-            <q-item-section side>
-              <q-icon name="img:/chart.svg" size="lg" />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label caption
-                >Acompanhar relatório de gastos</q-item-label
-              >
-              <q-item-label class="uppercase f-bold text-accent"
-                >Ver relatório</q-item-label
-              >
-            </q-item-section>
-            <q-item-section side>
-              <q-icon name="arrow_right" size="md" color="primary" />
-            </q-item-section>
-          </q-item>
-        </q-card>
-      </div>
-      <div
-      class="h-1/3 grid grid-cols-3 w-full p-2 gap-2 justify-center items-center "
+        Acompanhar
+      </p>
+      <q-card flat class="w-full">
+        <q-item>
+          <q-item-section side>
+            <q-icon
+              name="fa-solid fa-share-from-square"
+              size="sm"
+              color="primary"
+            />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="uppercase f-bold text-primary"
+              >Ver todas as Despesas</q-item-label
+            >
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="arrow_right" size="md" color="primary" />
+          </q-item-section>
+        </q-item>
+      </q-card>
+      <q-card flat class="w-full">
+        <q-item>
+          <q-item-section side>
+            <q-icon
+              name="fa-solid fa-hand-holding-dollar"
+              size="sm"
+              color="primary"
+            />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="uppercase f-bold text-primary"
+              >Ver todas as Entradas</q-item-label
+            >
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="arrow_right" size="md" color="primary" />
+          </q-item-section>
+        </q-item>
+      </q-card>
+      <q-card flat class="w-full">
+        <q-item>
+          <q-item-section side>
+            <q-icon name="fa-solid fa-chart-line" size="sm" color="primary" />
+          </q-item-section>
+          <q-item-section>
+            <q-item-label class="uppercase f-bold text-primary"
+              >Ver relatório</q-item-label
+            >
+          </q-item-section>
+          <q-item-section side>
+            <q-icon name="arrow_right" size="md" color="primary" />
+          </q-item-section>
+        </q-item>
+      </q-card>
+    </div>
+    <div
+      class="w-full py-2 grid grid-cols-3 justify-between items-center gap-2"
     >
-      <q-btn
-        color="white"
-        v-for="item in store.menu"
-        :key="item.title"
-        class="w-full min-h-20 flex justify-center items-center gap-2 flex-col"
+      <p
+        style="grid-column: 1/4"
+        class="uppercase f-bold"
+        :class="[$q.dark.isActive ? 'text-zinc-100' : 'text-accent']"
       >
-        <q-icon :name="item.icon" size="lg" color="primary" />
-        <p class="uppercase f-normal text-primary text-[10px]">
-          {{ item.title }}
-        </p>
+        Mais
+      </p>
+      <q-btn
+        class="full-height"
+        :color="$q.dark.isActive ? 'dark' : 'white'"
+        text-color="a"
+        unelevated
+      >
+        <q-icon name="mdi-calendar" size="50px" />
+        <p class="text-xs">Agenda</p>
+      </q-btn>
+      <q-btn
+        class="full-height"
+        :color="$q.dark.isActive ? 'dark' : 'white'"
+        text-color="a"
+        unelevated
+      >
+        <q-icon name="mdi-calculator" size="50px" />
+        <p class="text-xs">Calculadora</p>
+      </q-btn>
+      <q-btn
+        class="full-height"
+        :color="$q.dark.isActive ? 'dark' : 'white'"
+        text-color="a"
+        unelevated
+      >
+        <q-icon name="mdi-cog" size="50px" />
+        <p class="text-xs">Configurações</p>
       </q-btn>
     </div>
-    </div>
-
-
   </q-page>
 </template>
 <script>
@@ -182,20 +208,22 @@ import { supabase } from "src/boot/supabase";
 import PaySvg from "src/components/PaySvg.vue";
 import { useAuth } from "src/stores/auth";
 import { useConfig } from "src/stores/config";
+import { useControl } from "src/stores/control";
 
 export default {
   data() {
     const auth = useAuth();
     const store = useConfig();
+    const storeC = useControl()
     return {
       auth,
       store,
+      storeC,
       loading: true,
       username: null,
       website: null,
       avatar_url: null,
-      totalIncoming: 5000.52,
-      totalExpense: 4500.97,
+
       date: moment(),
     };
   },
@@ -203,8 +231,20 @@ export default {
     this.getProfile();
   },
   computed: {
+    totalExpense(){
+      console.log(this.storeC.expenses)
+        const total =  this.storeC.expenses.reduce((acc,item) => {
+            acc = acc + Number(item.ammount);
+            return acc
+        },0);
+        console.log(total)
+        return total;
+    },
+    totalIncoming(){
+
+    },
     saldo() {
-      return (this.totalIncoming - this.totalExpense);
+      return this.totalIncoming - this.totalExpense;
     },
   },
   methods: {
@@ -260,17 +300,27 @@ export default {
         this.loading = false;
       }
     },
-    previous() {
-      this.date = moment(this.date).subtract(1, "month");
-      this.store.month = moment(this.date).format("MMMM");
+    async previous() {
+      this.storeC.currentDate = moment(this.storeC.currentDate)
+        .subtract(1, "month")
+        .format("YYYY-MM-DD");
+        this.storeC.currentMonth = moment(this.storeC.currentDate).format("MM");
+      this.storeC.currentYear = moment(this.storeC.currentDate).format("YYYY");
+      await this.storeC.getControls();
     },
-    next() {
-      this.date = moment(this.date).add(1, "month");
-      this.store.month = moment(this.date).format("MMMM");
+    async next() {
+      this.storeC.currentDate = moment(this.storeC.currentDate)
+        .add(1, "month")
+        .format("YYYY-MM-DD");
+        this.storeC.currentMonth = moment(this.storeC.currentDate).format("MM");
+      this.storeC.currentYear = moment(this.storeC.currentDate).format("YYYY");
+      await this.storeC.getControls();
     },
-    current() {
-      this.date = moment();
-      this.store.month = moment().format("MMMM");
+    async current() {
+      this.storeC.currentDate = moment().format("YYYY-MM-DD");
+      this.storeC.currentMonth = moment().format("MM");
+      this.storeC.currentYear = moment().format("YYYY");
+      await this.storeC.getControls();
     },
   },
   components: { PaySvg },

@@ -46,6 +46,15 @@ export const useControl = defineStore("control", {
         recalculate_id: null,
         haveRecalculate: null,
       },
+      expenses: [],
+      incomings: [],
+      totalIncoming: null,
+      totalExpense: null,
+      month: moment().format("MMMM"),
+      year: moment().format("YYYY"),
+      currentDate: moment().format("YYYY-MM-DD"),
+      currentYear: moment().format("YYYY"),
+      currentMonth: moment().format("MM"),
     };
   },
   actions: {
@@ -65,6 +74,9 @@ export const useControl = defineStore("control", {
               newcontrol[key] = value;
             }
           }
+          if (key == "type") {
+            newcontrol[key] = value;
+          }
         });
       });
 
@@ -78,15 +90,49 @@ export const useControl = defineStore("control", {
         newcontrol = [];
         for (let i = 0; i < control.installments; i++) {
           let newc = { ...control };
-          newc["duedate"] = moment(new Date(control.duedate))
-            .add(i, "months")
-            .format("YYYY-MM-DD");
+          let dt = moment(new Date(control.duedate));
+          newc["duedate"] = dt.add(i, "months").format("YYYY-MM-DD");
+          newc["currentMonth"] = dt.format("MM");
+          newc["currentYear"] = dt.format("YYYYY");
           newcontrol.push(newc);
         }
+      } else {
       }
+
+      console.log(newcontrol);
       const { error } = await supabase.from("allcontrol").insert(newcontrol);
 
+      console.log(error);
       return error;
+    },
+    async getAllControls(type) {
+      try {
+        const { data, error } = await supabase
+            .from("allcontrol")
+            .select()
+            .match({ userId: this.auth.session.user.id, type, type })
+            .or(
+                `repeat.eq.fixed,and(currentMonth.eq.${this.currentMonth},currentYear.eq.${this.currentYear})`
+            );
+
+        if (error) {
+            throw new Error('Erro ao buscar dados no Supabase');
+        } else {
+            console.log('data ', data)
+            return data
+        }
+    } catch (error) {
+        console.error(error);
+
+
+    }
+  },
+
+
+
+    async getControls() {
+      this.expenses = await this.getAllControls('expense');
+      this.expenses = await this.getAllControls('incoming');
     },
   },
 });

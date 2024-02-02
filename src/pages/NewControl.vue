@@ -8,7 +8,7 @@
         <q-input
           class="font-bold"
           input-class="text-gray-800"
-          color="primary"
+          color="p"
           label="Titulo"
           outlined
           v-model="store.control.title"
@@ -18,7 +18,7 @@
         <q-input
           class="uppercase font-bold"
           input-class="text-gray-800"
-          color="primary"
+          color="p"
           label="Valor"
           outlined
           v-model="store.control.ammount"
@@ -32,7 +32,7 @@
         <q-input
           class="uppercase font-bold"
           input-class="text-gray-800"
-          color="primary"
+          color="p"
           label="Data"
           outlined
           v-model="store.control.duedate"
@@ -42,7 +42,7 @@
           dense
         >
           <template #after>
-            <q-btn icon="event" round color="primary">
+            <q-btn icon="event" round color="p">
               <q-popup-proxy
                 cover
                 transition-show="scale"
@@ -102,8 +102,8 @@
                   }"
                 >
                   <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn label="Cancel" color="primary" flat v-close-popup />
-                    <q-btn label="OK" color="primary" flat v-close-popup />
+                    <q-btn label="Cancel" color="p" flat v-close-popup />
+                    <q-btn label="OK" color="p" flat v-close-popup />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -119,7 +119,7 @@
           :toggle-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
           toggle-text-color="white"
           :color="store.control.type == 'expense' ? 'red-1' : 'green-1'"
-          text-color="primary"
+          text-color="p"
           class="h-10"
           :options="[
             { label: 'Vez', value: 'unique', icon: 'mdi-numeric-1' },
@@ -135,7 +135,7 @@
         <q-input
           class="uppercase font-bold"
           input-class="text-gray-800"
-          color="primary"
+          color="p"
           outlined
           v-model="store.control.installments"
           label="Numero de parcelas"
@@ -147,7 +147,7 @@
         <q-input
           class="font-bold"
           input-class="text-gray-800"
-          color="primary"
+          color="p"
           label="Descrição"
           outlined
           v-model="store.control.description"
@@ -203,11 +203,11 @@ export default {
       e.preventDefault();
       this.$q.loading.show({
         spinner: QSpinnerPie,
-        spinnerColor: "primary",
+        spinnerColor: "p",
         spinnerSize: 140,
-        backgroundColor: "accent",
+        backgroundColor: "a",
         message: "Aguarde...",
-        messageColor: "primary",
+        messageColor: "p",
       });
       const control = this.store.editedControl();
       const error = await this.store.addControl(control);

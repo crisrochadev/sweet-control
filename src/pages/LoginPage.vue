@@ -8,7 +8,7 @@
           </div>
           <div class="flex items-center w-full justify-center gap-2">
             <h1
-              class="mt-4 sweet-font uppercase text-4xl md:text-[60px] md:leading-[50px] font-[900] text-primary"
+              class="mt-4 sweet-font uppercase text-4xl md:text-[60px] md:leading-[50px] font-[900] text-p"
             >
               SweetControl
             </h1>
@@ -27,14 +27,14 @@
             class="h-full w-full lg:w-8/12 flex flex-col gap-8 justify-center"
           >
             <h2
-              class="text-center uppercase text-2xl font-bold text-gray-700 text-primary"
+              class="text-center uppercase text-2xl font-bold text-gray-700 text-p"
             >
               Entrar
             </h2>
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="email"
-              class="border-2 text-sw-primary"
+              class="border-2 text-sw-p"
               outlined
               required
               dense
@@ -42,9 +42,9 @@
               v-model="form.email"
             />
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="Senha"
-              class="rounded text-sw-primary"
+              class="rounded text-sw-p"
               outlined
               required
               dense
@@ -56,12 +56,12 @@
                   :icon="lookPass ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
                   round
                   flat
-                  color="primary"
+                  color="p"
                   @click="lookPass = !lookPass"
                 />
               </template>
             </q-input>
-            <p class="text-right -mt-6 text-secondary">
+            <p class="text-right -mt-6 text-s">
               Esqueceu a senha?
               <q-btn @click="tab = 'recover'" label="recuperar" flat dense />
             </p>
@@ -69,7 +69,7 @@
             <q-btn
               type="submit"
               label="Entrar"
-              color="primary"
+              color="p"
               class="full-width mb-4"
               size="lg"
               dense
@@ -84,23 +84,23 @@
             class="h-full w-full lg:w-8/12 flex flex-col gap-2 justify-center"
           >
             <h2
-              class="text-center uppercase text-lg font-bold text-gray-700 text-primary"
+              class="text-center uppercase text-lg font-bold text-gray-700 text-p"
             >
               Cadastrar
             </h2>
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="Nome"
-              class="text-sw-primary"
+              class="text-sw-p"
               outlined
               dense
               v-model="form.displayName"
               :rules="[(val) => !!val || 'O Nome é obrigatório']"
             />
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="email"
-              class="text-sw-primarymb-4"
+              class="text-sw-pmb-4"
               outlined
               dense
               type="email"
@@ -108,9 +108,9 @@
               :rules="[(val) => !!val || 'O Email é obrigatório']"
             />
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="Crie uma Senha"
-              class="rounded text-sw-primary"
+              class="rounded text-sw-p"
               outlined
               dense
               required
@@ -135,16 +135,16 @@
                   round
                   flat
                   required
-                  color="primary"
+                  color="p"
                   @click="lookPass = !lookPass"
                 />
               </template>
             </q-input>
             <q-input
               dense
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="Confirma a senha"
-              class="rounded text-sw-primary"
+              class="rounded text-sw-p"
               outlined
               required
               v-model="form.c_password"
@@ -159,7 +159,7 @@
                   :icon="lookPass ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
                   round
                   flat
-                  color="primary"
+                  color="p"
                   @click="lookPass = !lookPass"
                 />
               </template>
@@ -178,7 +178,7 @@
                   dense
                   flat
                   size="sm"
-                  color="primary"
+                  color="p"
                 />
               </div>
               <q-icon
@@ -202,7 +202,7 @@
                   dense
                   flat
                   size="sm"
-                  color="primary"
+                  color="p"
                   @click="openPolicy = true"
                 />
               </div>
@@ -221,7 +221,7 @@
             <q-btn
               type="submit"
               label="Cadastrar"
-              color="primary"
+              color="p"
               class="full-width mb-4"
               size="lg"
               dense
@@ -236,7 +236,7 @@
             class="h-full w-full md:w-8/12 flex flex-col gap-8 justify-center"
           >
             <h2
-              class="text-center uppercase text-2xl font-bold text-gray-700 text-primary"
+              class="text-center uppercase text-2xl font-bold text-gray-700 text-p"
             >
               Recuperar Senha
             </h2>
@@ -245,9 +245,9 @@
               senha.
             </p>
             <q-input
-              input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+              input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
               placeholder="email"
-              class="border-2 text-sw-primary"
+              class="border-2 text-sw-p"
               outlined
               dense
               required
@@ -258,7 +258,7 @@
             <q-btn
               type="submit"
               label="Enviar"
-              color="primary"
+              color="p"
               class="full-width mb-4"
               size="lg"
               dense
@@ -270,11 +270,11 @@
   </div>
   <q-dialog v-model="openTerms">
     <q-card class="w-full h-full">
-      <q-card-section header class="uppercase font-bold text-primary text-lg">
+      <q-card-section header class="uppercase font-bold text-p text-lg">
         <q-item>
           <q-item-section side>
             <q-avatar>
-              <q-icon name="manage_accounts" color="primary" />
+              <q-icon name="manage_accounts" color="p" />
             </q-avatar>
           </q-item-section>
           <q-item-section> Termos e Serviços </q-item-section>
@@ -284,7 +284,7 @@
                 icon="close"
                 round
                 flat
-                color="primary"
+                color="p"
                 @click="openTerms = false"
               />
             </q-avatar>
@@ -306,14 +306,14 @@
       <q-card-actions class="flex justify-end gap-2 my-2">
         <q-btn
           label="Fechar"
-          color="primary"
+          color="p"
           outline
           icon="close"
           @click="openTerms = false"
         />
         <q-btn
           label="Concordar e Fechar"
-          color="primary"
+          color="p"
           icon="check"
           @click="(form.terms = true), (openTerms = false)"
         />
@@ -322,11 +322,11 @@
   </q-dialog>
   <q-dialog v-model="openPolicy">
     <q-card class="w-full h-full">
-      <q-card-section header class="uppercase font-bold text-primary text-lg">
+      <q-card-section header class="uppercase font-bold text-p text-lg">
         <q-item>
           <q-item-section side>
             <q-avatar>
-              <q-icon name="manage_accounts" color="primary" />
+              <q-icon name="manage_accounts" color="p" />
             </q-avatar>
           </q-item-section>
           <q-item-section> Politicas de privacidade </q-item-section>
@@ -336,7 +336,7 @@
                 icon="close"
                 round
                 flat
-                color="primary"
+                color="p"
                 @click="openPolicy = false"
               />
             </q-avatar>
@@ -358,14 +358,14 @@
       <q-card-actions class="flex justify-end gap-2 my-2">
         <q-btn
           label="Fechar"
-          color="primary"
+          color="p"
           outline
           icon="close"
           @click="openPolicy = false"
         />
         <q-btn
           label="Concordar e Fechar"
-          color="primary"
+          color="p"
           icon="check"
           @click="(form.policy = true), (openPolicy = false)"
         />
@@ -436,11 +436,11 @@ export default {
     show() {
       this.$q.loading.show({
         spinner: QSpinnerPie,
-        spinnerColor: "primary",
+        spinnerColor: "p",
         spinnerSize: 140,
-        backgroundColor: "accent",
+        backgroundColor: "a",
         message: "Aguarde...",
-        messageColor: "primary",
+        messageColor: "p",
       });
     },
     hide() {
@@ -520,7 +520,7 @@ export default {
             class: "w-full flex justify-center",
             progress: {
               spinner: QSpinnerHourglass,
-              color: "primary",
+              color: "p",
             },
             ok: false,
             color: "red",
@@ -558,7 +558,7 @@ export default {
             message: `Enviamos um email para ${this.form.email}, por favor, clique no link enviado para confirmar sua conta.`,
             ok: {
               label: "ok",
-              color: "primary",
+              color: "p",
             },
           });
         } else {
@@ -570,7 +570,7 @@ export default {
                 message: "Usuário já Cadastrado",
                 ok: {
                   label: "Entrar",
-                  color: "primary",
+                  color: "p",
                   outline: true,
                 },
                 cancel: {
@@ -578,7 +578,7 @@ export default {
                   color: "grey-8",
                   outline: true,
                 },
-                color: "primary",
+                color: "p",
               })
               .onOk(() => {
                 this.tab = "login";
@@ -635,7 +635,7 @@ export default {
             message: `Por favor aguarde ${this.time} segundos`,
             progress: {
               spinner: QSpinnerHourglass,
-              color: "primary",
+              color: "p",
             },
             ok: false,
             color: "red",
@@ -652,7 +652,7 @@ export default {
 
           ok: {
             label: "OK",
-            color: "primary",
+            color: "p",
             outline: true,
           },
           color: "green",

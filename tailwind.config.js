@@ -1,19 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require("tailwindcss/colors");
 export default {
+  darkMode: 'class',
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      "sw-primary": "#ea5b5f",
-      "sw-secondary": "#f8c6ba",
-      "sw-accent": "#f8c6ba",
-      gray: colors.gray,
-      green: colors.emerald,
-      purple: colors.violet,
-      yellow: colors.amber,
-      pink: colors.fuchsia,
-      white: colors.white,
-      red: colors.red,
+      "sw-p": "#ea5b5f",
+      "sw-s": "#f8c6ba",
+      "sw-a": "#f8c6ba",
+      ...colors
     },
     extend: {},
   },

@@ -1,16 +1,16 @@
 <template>
   <q-dialog   :position="position" persistent>
-    <q-card style="width: 700px; max-width: 95vw;border-radius:10px !important" class="bg-white">
+    <q-card style="width: 700px; max-width: 95vw;border-radius:10px !important" :class="$q.dark.isActive ? 'bg-dark' : 'bg-white'">
       <q-card-section
         class="flex justify-between h-14 items-center py-0 px-2"
         header
       >
         <q-icon
-          size="lg"
+          size="sm"
           :name="
             store.control.type == 'expense'
-              ? 'img:/expense.svg'
-              : 'img:/incoming.svg'
+              ? 'fa-solid fa-share-from-square'
+              : 'fa-solid fa-hand-holding-dollar'
           "
         />
 
@@ -27,6 +27,7 @@
           icon="close"
           size="15px"
           dense
+            clearable
           round
           flat
           v-close-popup
@@ -41,22 +42,24 @@
           <q-input
             class="font-bold"
             input-class="text-gray-800"
-            color="primary"
+            color="p"
             label="Titulo"
             outlined
             v-model="store.control.title"
             required
             dense
+            clearable
           />
           <q-input
             class="uppercase font-bold"
             input-class="text-gray-800"
-            color="primary"
+            color="p"
             label="Valor"
             outlined
             v-model="store.control.ammount"
             required
             dense
+            clearable
             prefix="R$"
             inputmode="numeric"
             reverse-fill-mask
@@ -65,7 +68,7 @@
           <q-input
             class="uppercase font-bold"
             input-class="text-gray-800"
-            color="primary"
+            color="p"
             label="Data"
             outlined
             v-model="store.control.duedate"
@@ -73,9 +76,10 @@
             inputmode="numeric"
             mask="##/##/####"
             dense
+            clearable
           >
             <template #after>
-              <q-btn icon="event" class="full-height w-10" color="white" text-color="accent" unelevated>
+              <q-btn icon="event" class="full-height w-10" color="white" text-color="dark" unelevated>
                 <q-popup-proxy
                   cover
                   transition-show="scale"
@@ -137,11 +141,11 @@
                     <div class="row items-center justify-end q-gutter-sm">
                       <q-btn
                         label="Cancel"
-                        color="primary"
+                        color="p"
                         flat
                         v-close-popup
                       />
-                      <q-btn label="OK" color="primary" flat v-close-popup />
+                      <q-btn label="OK" color="p" flat v-close-popup />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -153,10 +157,11 @@
             v-model="store.control.repeat"
             spread
             dense
+            clearable
             flat
             size="12px"
             color="white"
-            text-color="accent"
+            text-color="a"
             :toggle-text-color="store.control.type == 'expense' ? 'red-6' : 'green-6'"
             class="h-10"
             :options="[
@@ -173,23 +178,25 @@
           <q-input
             class="uppercase font-bold"
             input-class="text-gray-800"
-            color="primary"
+            color="p"
             outlined
             v-model="store.control.installments"
             label="Numero de parcelas"
             v-if="store.control.repeat == 'installments'"
             dense
+            clearable
             type="number"
           />
 
           <q-input
             class="font-bold"
             input-class="text-gray-800"
-            color="primary"
+            color="p"
             label="Descrição"
             outlined
             v-model="store.control.description"
             dense
+            clearable
             type="textarea"
           />
 
@@ -246,13 +253,14 @@ export default {
     // },
     async addControl(e) {
       e.preventDefault();
+
       this.$q.loading.show({
         spinner: QSpinnerPie,
-        spinnerColor: "primary",
+        spinnerColor: "p",
         spinnerSize: 140,
-        backgroundColor: "accent",
+        backgroundColor: "a",
         message: "Aguarde...",
-        messageColor: "primary",
+        messageColor: "p",
       });
       const control = this.store.editedControl();
       const error = await this.store.addControl(control);

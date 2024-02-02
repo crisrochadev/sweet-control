@@ -8,7 +8,7 @@
         dense
         v-if="tabb == 'register' || tabb == 'recover'"
         icon="mdi-arrow-left-thick"
-        color="primary"
+        color="p"
         :label="tabb == 'register' ? 'Entrar' : 'Voltar'"
         @click="tabb = 'login'"
       />
@@ -29,7 +29,7 @@
         dense
         v-if="tabb == 'login'"
         icon-right="mdi-arrow-right-thick"
-        color="primary"
+        color="p"
         label="Cadastre-se"
         @click="tabb = 'register'"
       />
@@ -41,7 +41,7 @@
       <div class="relative w-full h-[1px] bg-gray-200">
         <span
           v-if="tabb !== 'recover'"
-          class="absolute -top-3 left-2/4 -translate-x-2/4 bg-white text-sw-primary"
+          class="absolute -top-3 left-2/4 -translate-x-2/4 bg-white text-sw-p"
           >ou</span
         >
       </div>
@@ -98,11 +98,11 @@ export default {
     show() {
       this.$q.loading.show({
         spinner: QSpinnerPie,
-        spinnerColor: "primary",
+        spinnerColor: "p",
         spinnerSize: 140,
-        backgroundColor: "accent",
+        backgroundColor: "a",
         message: "Aguarde...",
-        messageColor: "primary",
+        messageColor: "p",
       });
     },
     hide() {
@@ -140,7 +140,7 @@ export default {
             class: "w-full flex justify-center",
             progress: {
               spinner: QSpinnerHourglass,
-              color: "primary",
+              color: "p",
             },
             ok: false,
             color: "red",
@@ -176,7 +176,7 @@ export default {
             message: `Enviamos um email para ${this.form.email}, por favor, clique no link enviado para confirmar sua conta.`,
             ok: {
               label: "ok",
-              color: "primary",
+              color: "p",
             },
           });
         } else {
@@ -187,7 +187,7 @@ export default {
                 message: "Usuário já Cadastrado",
                 ok: {
                   label: "Entrar",
-                  color: "primary",
+                  color: "p",
                   outline: true,
                 },
                 cancel: {
@@ -195,7 +195,7 @@ export default {
                   color: "grey-8",
                   outline: true,
                 },
-                color: "primary",
+                color: "p",
               })
               .onOk(() => {
                 this.tab = "login";

@@ -12,7 +12,7 @@
         <q-btn
           label="Começar a controlar"
           outline
-          color="primary"
+          color="p"
           @click="model = 'forms'"
           class="mb-8"
           icon="img:/logo.png"

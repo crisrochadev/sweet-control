@@ -1,27 +1,43 @@
 <template>
   <q-layout
     view="lHh lpR fFf"
-    class="flex w-full h-full relative bg-gradient-to-r from-purple-50 to-purple-100"
+    class="flex w-full h-full relative "
+    :class="{
+      'dark': dark,
+      'bg-purple-50':!dark,
+      'bg-dark-page': dark,
+    }"
   >
-    <q-header class="bg-transparent text-primary pt-2">
+    <q-header class="bg-transparent text-prim pt-2">
       <q-toolbar>
         <q-btn
           v-if="$route.path == '/'"
           dense
-          color="white"
+          :color="dark ? 'grey-9' : 'white'"
+          :text-color="dark ? 'grey-2' : 'grey-8'"
           unelevated
-          text-color="grey-8"
           icon="menu"
           size="md"
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-btn
+          v-if="$route.path == '/'"
+          dense
+          :color="dark ? 'grey-9' : 'white'"
+          :text-color="dark ? 'grey-2' : 'grey-8'"
+          unelevated
+          icon="mdi-compare"
+          size="md"
+          class="ml-2"
+          @click="$q.dark.toggle"
+        />
+        <q-btn
           v-else
           dense
-          color="white"
+          :color="dark ? 'grey-9' : 'white'"
+          :text-color="dark ? 'grey-2' : 'grey-8'"
           unelevated
           size="md"
-          text-color="grey-8"
           icon="mdi-chevron-left"
           @click="$router.back()"
         />
@@ -34,7 +50,7 @@
           </q-avatar>
         </q-toolbar-title> -->
         <!-- <q-btn
-          color="primary"
+          color="p"
           flat
           dense
           icon="add"
@@ -44,7 +60,7 @@
         <q-space v-if="$route.path == '/'" />
         <q-toolbar-title
           v-else
-          class="f-medium uppercase text-sm flex-nowrap text-accent w-full flex-1 gap-2 flex justify-center items-center p-0"
+          class="f-medium uppercase text-sm flex-nowrap text-a w-full flex-1 gap-2 flex justify-center items-center p-0"
         >
           {{ $route.meta.title }}
         </q-toolbar-title>
@@ -52,10 +68,10 @@
           <q-btn
             v-if="$route.path == '/'"
             dense
-            color="white"
+            :color="dark ? 'grey-9' : 'white'"
+            :text-color="dark ? 'grey-2' : 'grey-8'"
             class="w-10"
             unelevated
-            text-color="grey-8"
             icon="search"
             size="md"
             @click="toggleLeftDrawer"
@@ -63,23 +79,23 @@
           <q-btn
             v-if="$route.path == '/'"
             dense
-            color="white"
+            :color="dark ? 'grey-9' : 'white'"
+            :text-color="dark ? 'grey-2' : 'grey-8'"
             unelevated
-            text-color="grey-8"
             size="md"
             class="w-10"
             icon="mdi-bell-outline"
           >
-            <q-badge color="primary" rounded floating>4</q-badge>
+            <q-badge color="p" rounded floating>4</q-badge>
           </q-btn>
           <q-btn
             v-else
             dense
-            color="white"
+            :color="dark ? 'grey-9' : 'white'"
+            :text-color="dark ? 'grey-2' : 'grey-8'"
             unelevated
-            flat
-            size="lg"
-            text-color="grey-8"
+
+            size="md"
             icon="mdi-dots-horizontal"
             @click="toggleLeftDrawer"
           />
@@ -91,7 +107,7 @@
       <div class="w-full flex justify-end">
         <q-btn
           color="white"
-          text-color="primary"
+          text-color="p"
           unelevated
           icon="close"
           @click="leftDrawerOpen = false"
@@ -114,27 +130,35 @@
     </q-page-container>
 
     <q-footer
-      class="bg-transparent flex justify-center items-center shadow-md h-14"
+      class="flex justify-center items-center shadow-md"
+      style="background-color: transparent"
       v-if="$q.screen.sm || $q.screen.xs"
     >
       <q-tabs
-        active-class="text-accent  bg-transparent"
-        class="text-accent bg-transparent"
-
+      switch-indicator
+        active-class="text-a  bg-transparent"
+        class="text-a bg-transparent h-20"
         dense
       >
-        <q-route-tab exact to="/" text-color="accent">
-          <q-icon name="mdi-chart-arc" size="lg" />
-          <p class="text-[10px]">Painel</p>
+        <q-route-tab exact to="/" >
+          <q-icon name="mdi-chart-arc" size="lg" :color="dark ? 'grey-3' : 'dark'"/>
+          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Painel</p>
         </q-route-tab>
         <q-route-tab exact to="/despesas" text-color="grey-6">
-          <q-icon name="img:/expense.svg" size="lg" />
-          <p class="text-[10px]">Despesas</p>
+          <q-icon name="fa-solid fa-share-from-square" size="md" :color="dark ? 'grey-3' : 'dark'"/>
+          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Despesas</p>
         </q-route-tab>
-        <q-btn icon="add" class="h-12 w-12" size="md" round color="primary" @click="openDialog('bottom')"/>
+        <q-btn
+          icon="add"
+          class="h-14 w-14 -mt-2"
+          size="md"
+          round
+          color="primary"
+          @click="openDialog('bottom')"
+        />
         <q-route-tab exact to="/entradas" text-color="grey-6">
-          <q-icon name="img:/incoming.svg" size="lg" />
-          <p class="text-[10px]">Entradas</p>
+          <q-icon name="fa-solid fa-hand-holding-dollar" size="md" :color="dark ? 'grey-3' : 'dark'"/>
+          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Entradas</p>
         </q-route-tab>
         <q-route-tab exact to="/perfil" text-color="grey-6">
           <q-avatar
@@ -145,7 +169,7 @@
             <q-img :src="user.user_metadata.avatar_url" />
           </q-avatar>
           <q-icon size="lg" name="mdi-account" v-else />
-          <p class="text-[10px]">Perfil</p>
+          <p class="text-[10px]" :class="dark ? 'text-zinc-300' : 'text-dark'">Perfil</p>
         </q-route-tab>
       </q-tabs>
     </q-footer>
@@ -158,6 +182,8 @@ import EssentialLink from "components/EssentialLink.vue";
 import { supabase } from "src/boot/supabase";
 import { useAuth } from "src/stores/auth";
 import NewControl from "src/components/NewControl.vue";
+import { useQuasar } from "quasar";
+import { useControl } from "src/stores/control";
 
 const linksList = [
   {
@@ -225,8 +251,12 @@ export default defineComponent({
 
   data() {
     const auth = useAuth();
+    const $q = useQuasar();
+    const store = useControl()
     return {
       essentialLinks: linksList,
+      $q,
+      store,
       leftDrawerOpen: false,
       supabase,
       showMenu: false,
@@ -254,5 +284,13 @@ export default defineComponent({
       });
     },
   },
+  computed: {
+    dark() {
+      return this.$q.dark.isActive;
+    },
+  },
+  async mounted(){
+    await this.store.getControls()
+  }
 });
 </script>

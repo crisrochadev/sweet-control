@@ -1,17 +1,17 @@
 <template>
   <q-item clickable tag="a" :to="link">
     <q-item-section>
-      <q-item-label class="uppercase font-bold text-primary">{{
+      <q-item-label class="uppercase font-bold text-p">{{
         title
       }}</q-item-label>
       <q-item-label caption>{{ caption }}</q-item-label>
     </q-item-section>
     <q-item-section v-if="icon" avatar >
-      <q-icon color="primary" :name="icon" v-if="icon !== 'person'" />
+      <q-icon color="p" :name="icon" v-if="icon !== 'person'" />
       <q-avatar size="sm" v-else-if="user.user_metadata.avatar_url">
         <img :src="user.user_metadata.avatar_url" />
       </q-avatar>
-      <q-icon color="primary" v-else :name="icon" v-if="icon !== 'person'" />
+      <q-icon color="p" v-else :name="icon" v-if="icon !== 'person'" />
     </q-item-section>
   </q-item>
 </template>

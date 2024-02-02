@@ -6,13 +6,13 @@
       </div>
     </div>
     <q-form @submit="reset" class="w-full h-full flex flex-col gap-4 mt-4">
-      <h2 class="w-full text-center uppercase text-primary text-2xl">
+      <h2 class="w-full text-center uppercase text-p text-2xl">
         Redefina sua senha
       </h2>
       <q-input
-        input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+        input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
         placeholder="Crie uma Senha"
-        class="rounded text-sw-primary"
+        class="rounded text-sw-p"
         outlined
         dense
         required
@@ -36,16 +36,16 @@
             round
             flat
             required
-            color="primary"
+            color="p"
             @click="lookPass = !lookPass"
           />
         </template>
       </q-input>
       <q-input
         dense
-        input-class="text-sw-primary text-lg font-bold placeholder:uppercase text-sm"
+        input-class="text-sw-p text-lg font-bold placeholder:uppercase text-sm"
         placeholder="Confirma a senha"
-        class="rounded text-sw-primary"
+        class="rounded text-sw-p"
         outlined
         required
         v-model="form.c_password"
@@ -60,7 +60,7 @@
             :icon="lookPass ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
             round
             flat
-            color="primary"
+            color="p"
             @click="lookPass = !lookPass"
           />
         </template>
@@ -68,7 +68,7 @@
       <q-btn
         icon="save"
         size="lg"
-        color="primary"
+        color="p"
         label="salvar"
         class="full-width"
         type="submit"
@@ -116,7 +116,7 @@ export default {
               title: "Atenção",
               message: "Link Expirado",
               ok: {
-                color: "primary",
+                color: "p",
                 label: "Inicio",
               },
             })
@@ -134,7 +134,7 @@ export default {
             message:
               "Senha Alterada com sucesso, voce sera redirecionado para o inicio",
             ok: {
-              color: "primary",
+              color: "p",
               label: "OK",
             },
           })

@@ -338,6 +338,7 @@ export const firebase = {
   },
   async addData(table, data) {
     try {
+
       const docRef = await addDoc(collection(db, table), data);
       return {
         success: true,
@@ -352,41 +353,52 @@ export const firebase = {
   },
   async getData(table, date, type) {
     try {
-      const dateNewFormat = moment(date).endOf('month').format('YYYYMMDD');
-      const dateOldFormat = moment(date).startOf('month').format('YYYYMMDD');
-      let newdate = parseInt(dateNewFormat, 10);
-      let olddate = parseInt(dateOldFormat, 10);
+      const resUser = await this.authUser();
+      if (resUser.success) {
+        console.log(resUser)
+        const dateNewFormat = moment(date).endOf('month').format('YYYYMMDD');
+        const dateOldFormat = moment(date).startOf('month').format('YYYYMMDD');
+        let newdate = parseInt(dateNewFormat, 10);
+        let olddate = parseInt(dateOldFormat, 10);
 
 
-      let data = [];
-      const dataRef = collection(db, table);
+        let data = [];
+        const dataRef = collection(db, table);
 
-      const query1 = query(
-        dataRef,
-        where('type', '==', type),
-        where('date', '<=', newdate),
-        where('date', '>=', olddate)
-      );
+        const query1 = query(
+          dataRef,
+          where('type', '==', type),
+          where('user_uid', '==', resUser.user.uid),
+          where('date', '<=', newdate),
+          where('date', '>=', olddate)
+        );
 
-      const query2 = query(
-        dataRef,
-        where('type', '==', type),
-        where('repeat', '==', 3),
-        where('date', '<=', olddate)
-      );
+        const query2 = query(
+          dataRef,
+          where('type', '==', type),
+          where('user_uid', '==', resUser.user.uid),
+          where('repeat', '==', 3),
+          where('date', '<=', olddate)
+        );
 
-      const [querySnapshot1, querySnapshot2] = await Promise.all([getDocs(query1), getDocs(query2)]);
+        const [querySnapshot1, querySnapshot2] = await Promise.all([getDocs(query1), getDocs(query2)]);
 
-      const results1 = querySnapshot1.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      const results2 = querySnapshot2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const results1 = querySnapshot1.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const results2 = querySnapshot2.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-      // Combine the results, removing duplicates by ID
-      const combinedResults = [...results1, ...results2.filter(doc => !results1.some(d => d.id === doc.id))];
+        // Combine the results, removing duplicates by ID
+        const combinedResults = [...results1, ...results2.filter(doc => !results1.some(d => d.id === doc.id))];
 
-      return {
-        success: true,
-        data: combinedResults
-      };
+        return {
+          success: true,
+          data: combinedResults
+        };
+      } else {
+        return {
+          success: false,
+          error: resUser.error
+        }
+      }
     } catch (e) {
       console.log(e)
       return {

@@ -4,7 +4,7 @@
       <div class="w-full h-[100px]">
         <div class="w-full h-[40px] flex justify-between items-center gap-2">
           <q-btn flat icon="arrow_left" color="pink-6" @click="prevMonth" />
-          <q-btn flat icon="undo" color="pink-6" @click="recover" />
+          <q-btn flat icon="undo" color="pink-6" class="w-8" @click="recover" />
 
           <q-btn-dropdown flat :label="config.months.find(m => m.id == currentMonth).name" color="pink-6"
             class="flex-1">

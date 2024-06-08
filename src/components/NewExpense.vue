@@ -154,6 +154,7 @@ export default {
 
     },
     async addData() {
+      this.$q.loading.show()
       if (this.expense.repeat == 1 || this.expense.repeat == 3) {
         const res = await this.insertData(this.expense)
         if (res.success) {
@@ -201,6 +202,7 @@ export default {
       }
 
       await this.config.getData(this.$route.path.endsWith('expenses') ? 'expense' : 'incoming')
+      this.$q.loading.hide()
     }
   }
 }

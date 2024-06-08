@@ -255,6 +255,7 @@ export default {
       this.config.currentYear = Number(moment(this.config.currentDate).format('YYYY'));
       this.config.getData('expense');
 
+      //
       await this.config.getData('incoming')
     },
     async recover() {

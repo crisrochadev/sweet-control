@@ -119,13 +119,15 @@
 
 <script>
 import moment from 'moment';
+import { useQuasar } from 'quasar';
 import { useConfig } from 'src/stores/example-store';
 
 export default {
   data() {
     return {
       config: useConfig(),
-      moment
+      moment,
+      $q:useQuasar()
     }
   },
   async mounted() {
@@ -180,8 +182,8 @@ export default {
   },
   methods: {
     async deleteExpense(item, type) {
+      this.$q.loading.show()
       const res = await this.$db.deleteData(item, type)
-      console.log(res)
       if (res.success) {
         this.$q.notify({
           message: `Despesa deletada com sucesso!`,
@@ -197,11 +199,14 @@ export default {
       }
 
       await this.config.getData('expense')
+      this.$q.loading.hide()
     },
     async onLeft({ reset }, item) {
+      this.$q.loading.show()
       const res = await this.$db.updateItem('expenses', item.id, { checked: !item.checked });
       if (res.success) this.config.getData('expense');
       reset()
+      this.$q.loading.hide()
     },
     onRight({ reset }, item) {
       this.config.expenseEdit = true;

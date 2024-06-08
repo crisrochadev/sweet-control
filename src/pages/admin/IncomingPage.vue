@@ -4,7 +4,7 @@
       <div class="w-full h-[100px]">
         <div class="w-full h-[40px] flex justify-between items-center gap-2">
           <q-btn flat icon="arrow_left" color="pink-6" @click="prevMonth" />
-          <q-btn flat icon="undo" color="pink-6" @click="recover" />
+          <q-btn flat icon="undo" color="pink-6" class="w-8" @click="recover" />
 
           <q-btn-dropdown flat :label="config.months.find(m => m.id == currentMonth).name" color="pink-6"
             class="flex-1">
@@ -108,13 +108,15 @@
 
 <script>
 import moment from 'moment';
+import { useQuasar } from 'quasar';
 import { useConfig } from 'src/stores/example-store';
 
 export default {
   data() {
     return {
       config: useConfig(),
-      moment
+      moment,
+      $q:useQuasar()
     }
   },
   async mounted() {
@@ -169,6 +171,7 @@ export default {
   },
   methods: {
     async deleteincoming(item, type) {
+      this.$q.loading.show()
       const res = await this.$db.deleteData(item, type)
       if (res.success) {
         this.$q.notify({
@@ -183,11 +186,14 @@ export default {
           icon: 'error'
         })
       }
+      this.$q.loading.hide()
     },
     async onLeft({ reset }, item) {
+      this.$q.loading.show()
       const res = await this.$db.updateItem('expenses', item.id, { checked: !item.checked });
       if (res.success) this.config.getData('incoming');
       reset()
+      this.$q.loading.hide()
     },
     onRight({ reset }, item) {
       this.config.expenseEdit = true;

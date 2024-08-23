@@ -1,14 +1,15 @@
 <template>
-  <q-layout view="lHh Lpr lFf " class="bg-gray-800">
+  <q-layout view="hHh lpR fFf" class="bg-gray-800">
     <q-page-container>
-      <transition
-        appear
-        enter-active-class="animated fadeInRight"
-        leave-active-class="animated fadeInLeft"
-
-      >
-        <router-view />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition
+          appear
+          enter-active-class="animated fadeInRight"
+          leave-active-class="animated fadeInLeft"
+        >
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </q-page-container>
   </q-layout>
 </template>

@@ -3,12 +3,12 @@ import configMoment from 'src/config/configMoment'
 import { defineStore } from 'pinia'
 import 'moment/locale/pt-br'
 import { userAuth } from 'src/boot/firebase';
-import { createExpense, deleteExpense, getExpense, getExpensesForMonth, updateExpense } from 'src/boot/database';
+import { createExpense, createWallet, deleteExpense, getExpense, getExpensesForMonth, getWallet, getWallets, updateExpense } from 'src/boot/database';
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
+import { useStorage } from '@vueuse/core';
 moment.defineLocale('pt-br', configMoment);
 
-console.log(configMoment)
 
 export const useDatabase = defineStore('database', {
   state() {
@@ -19,8 +19,19 @@ export const useDatabase = defineStore('database', {
       date: moment(Date.now()),
       months: configMoment.months,
       currentExpense: 4212.44,
+      wallets: [],
+      openNewWallet: false,
       currentIncome: 400.44,
       newExpenseOpen: false,
+      currentWallet: null,
+      openWallets: false,
+      wallet: {
+        name: null,
+        color: null,
+        default: false,
+      },
+      type: "Despesas",
+      types: ["Despesas", "Receita", "Tudo"],
       years: [],
       expense: {
         description: null,
@@ -33,7 +44,8 @@ export const useDatabase = defineStore('database', {
         installment: 1,
         parent: null,
         delectedDate: null,
-        delectedType: null
+        delectedType: null,
+        wallet: null
       },
       expenses: [],
       year: moment().format('YYYY'),
@@ -61,7 +73,12 @@ export const useDatabase = defineStore('database', {
         ammount: null,
         installments: 1,
         type: 'expense',
-        expenses: []
+        done: false,
+        installment: 1,
+        parent: null,
+        delectedDate: null,
+        delectedType: null,
+        wallet: null
       }
     },
     getMonth(type) {
@@ -105,10 +122,12 @@ export const useDatabase = defineStore('database', {
           await this.checkExpense(this.expense, true);
           this.updateExpenseOpen = false;
           this.newExpenseOpen = false;
+          this.resetExpense()
           return;
         }
         const user = await userAuth();
         this.expense['userid'] = user.uid;
+        this.expense['wallet'] = this.currentWallet;
 
         // Salva a data original para ser usada em cada parcela
         const originalDate = moment(this.expense.date, 'DD/MM/YYYY');
@@ -123,11 +142,9 @@ export const useDatabase = defineStore('database', {
             this.expense.parent = savedExpense;
             this.expense.installment += 1;
             const res = await createExpense(this.expense);
-            console.log(res);
           }
         } else {
           const res = await createExpense(this.expense);
-          console.log(res);
         }
 
         // Fecha o modal e reseta o estado da despesa
@@ -137,9 +154,79 @@ export const useDatabase = defineStore('database', {
       });
     },
 
+    async getCurrentWallet() {
+
+      this.loading(async () => {
+        const res = await getWallet(this.currentWallet)
+        if (Object.keys(res).length > 0) {
+          this.wallet = res;
+        }
+      })
+    },
+    async getWallets() {
+      this.loading(async () => {
+        const res = await getWallets();
+        this.wallets = res;
+      })
+    },
+
+    async changeWallet(id) {
+     this.currentWallet = id;
+     await this.getCurrentWallet()
+     await this.getExpenses();
+     this.openWallets = false;
+    },
+    async createWallet() {
+      this.loading(async () => {
+        if (!this.currentWallet) {
+          this.wallet = {
+            name: 'Padrão',
+            color: 'cyan-6',
+            default: true,
+          }
+        }
+        const res = await createWallet(this.wallet);
+        if (res) {
+
+          if (!this.currentWallet) {
+            this.q.dialog({
+              title: "Sucesso!",
+              message: 'Sua carteira "Padrão" foi criada!',
+              ok: {
+                color: 'green',
+                label: 'Continuar',
+                push: true
+              },
+              cancel: false,
+              persistent: true,
+              class: 'bg-grey-9 text-white'
+            }).onOk(async () => {
+              this.currentWallet = res;
+              this.wallet = {
+                name: null,
+                color: null,
+                default: false,
+              }
+              await this.getWallets()
+              await this.getCurrentWallet()
+            })
+          } else {
+            this.currentWallet = res;
+            this.wallet = {
+              name: null,
+              color: null,
+              default: false,
+            }
+            await this.getWallets()
+            await this.getCurrentWallet()
+            this.openNewWallet = false;
+          }
+        }
+      })
+    },
     async getExpenses() {
       this.loading(async () => {
-        const res = await getExpensesForMonth(this.date.format('DD/MM/YYYY'));
+        const res = await getExpensesForMonth(this.date.format('DD/MM/YYYY'), this.type, this.currentWallet);
         this.expenses = res;
 
         // Resetando os valores de currentExpense e currentIncome
@@ -148,9 +235,7 @@ export const useDatabase = defineStore('database', {
 
         // Iterando sobre as despesas retornadas e somando os valores de acordo com o tipo
         this.expenses.forEach(expense => {
-          console.log(expense)
           if (expense.type === 'expense') {
-            console.log(expense.ammount)
             this.currentExpense += Number(expense.ammount.replace(',', '.'));
           } else if (expense.type === 'income') {
             this.currentIncome += Number(expense.ammount.replace(',', '.'));
@@ -163,8 +248,11 @@ export const useDatabase = defineStore('database', {
         }
       });
     },
+    async getByType(type) {
+      this.type = type;
+      await this.getExpenses()
+    },
     async deleteExpense(expense, { reset }) {
-      console.log(expense)
       this.loading(async () => {
         let dialog = {
           title: "Atenção!",
@@ -189,6 +277,12 @@ export const useDatabase = defineStore('database', {
             title: "Atenção!",
             message: "Deseja deletar " + expense.description + "?",
             class: 'bg-grey-9 text-white',
+            ok: {
+              color: 'red',
+              class: 'text-white',
+              push: true,
+              label: 'DELETAR'
+            },
             options: {
               type: 'radio',
               model: 'opt1',
@@ -199,12 +293,15 @@ export const useDatabase = defineStore('database', {
                 { label: 'Todas', value: 3 }
               ]
             },
-            cancel: true,
+            cancel: {
+              outline: true,
+              color: 'white',
+              label: "CANCELAR"
+            },
             persistent: true
           }
         }
         this.q.dialog(dialog).onOk(async data => {
-          console.log('>>>> OK, received', data)
           if (expense.repeat.value == 3) {
             if (data == 2) {
               expense.delectedDate = moment(this.date).format('DD/MM/YYYY');
@@ -228,7 +325,6 @@ export const useDatabase = defineStore('database', {
                 reset()
               } else if (data == 2) {
                 const curEx = await getExpense('parent', expense.parent ? expense.parent : expense.id);
-                console.log(curEx)
                 for (let ex of curEx) {
                   if (Number(ex.installment) >= Number(expense.installment)) {
                     await deleteExpense(ex.id);
@@ -264,8 +360,10 @@ export const useDatabase = defineStore('database', {
     async checkExpense(expense, notCheck = false) {
       this.loading(async () => {
         let newexpense = { ...expense }
+        let expenseId = newexpense.id
+        delete newexpense.id;
         if (!notCheck) newexpense.done = !expense.done;
-        await updateExpense(expense.id, newexpense);
+        await updateExpense(expenseId, newexpense);
         await this.getExpenses()
       })
     },

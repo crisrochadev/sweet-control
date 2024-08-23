@@ -2,23 +2,23 @@
   <q-page padding>
     <div class="flex justify-between items-center mb-4">
       <q-btn-dropdown
-        :label="type"
+        :label="db.type"
         flat
         dense
-        color="white"
+        :color="db.type == 'Despesas' ? 'red-5' : db.type == 'Tudo' ? 'white' : 'green-6'"
         class="w-[calc(33%_-_15px)]"
         size="sm"
       >
         <q-list dense class="bg-gray-700 text-white">
           <q-item
-            v-for="t in types"
+            v-for="t in db.types"
             :key="t"
             clickable
             v-close-popup
-            @click="type = t"
-            :class="[t == type ? 'bg-cyan-900' : '']"
+            @click="() => db.getByType(t)"
+            :class="[t == db.type ? 'bg-cyan-900' : '']"
           >
-            <q-item-section class="uppercase font-bold text-[10px]">{{
+            <q-item-section class="uppercase font-bold text-[12px]">{{
               t
             }}</q-item-section>
           </q-item>
@@ -29,7 +29,7 @@
         flat
         round
         color="cyan-6"
-        size="xs"
+        size="sm"
         @click="db.resetDate"
       />
       <q-btn-dropdown
@@ -55,7 +55,7 @@
               }
             "
           >
-            <q-item-section class="uppercase font-bold text-[10px]">{{
+            <q-item-section class="uppercase font-bold text-[12px]">{{
               month
             }}</q-item-section>
           </q-item>
@@ -82,7 +82,7 @@
               }
             "
           >
-            <q-item-section class="uppercase font-bold text-[10px]">{{
+            <q-item-section class="uppercase font-bold text-[12px]">{{
               year
             }}</q-item-section>
           </q-item>
@@ -93,7 +93,7 @@
       class="w-full flex items-center justify-between mt-2 border-b-2 pb-1 border-gray-700"
     >
       <div class="text-md text-cyan-600">
-        <p class="text-[10px] text-white">Receita</p>
+        <p class="text-[12px] text-white">Receita</p>
         <p>
           {{
             db.currentIncome.toLocaleString("pt-br", {
@@ -104,7 +104,7 @@
         </p>
       </div>
       <div>
-        <p class="text-[10px] text-white">Despesas</p>
+        <p class="text-[12px] text-white">Despesas</p>
         <p class="text-md text-red-500">
           {{
             db.currentExpense.toLocaleString("pt-br", {
@@ -124,7 +124,7 @@
             : 'text-red-500'
         "
       >
-        <p class="text-[10px] text-white">Saldo</p>
+        <p class="text-[12px] text-white">Saldo</p>
         <p>
           {{
             (db.currentIncome - db.currentExpense).toLocaleString("pt-br", {
@@ -135,7 +135,7 @@
         </p>
       </div>
     </div>
-    <q-scroll-area class="h-[calc(100svh_-_160px)] pb-10 pt-2">
+    <q-scroll-area class="h-[calc(100svh_-_195px)] pb-10 pt-2 ">
       <q-list>
         <q-slide-item
           class="rounded shadow-md bg-gray-900 my-2 hover:bg-gray-700"
@@ -172,7 +172,7 @@
               />
             </q-item-section>
             <q-item-section>
-              <q-item-label caption class="text-gray-300 text-[10px]">{{
+              <q-item-label caption class="text-gray-300 text-[12px]">{{
                 expense.date.toLocaleString("pt-BR", { style: "date" })
               }}</q-item-label>
               <q-item-label class="text-white">{{
@@ -181,7 +181,7 @@
             </q-item-section>
             <q-item-section
               side
-              class="text-xs font-extrabold"
+              class="text-sm font-extrabold"
               :class="[
                 expense.type == 'expense' ? 'text-red-600' : 'text-cyan-600',
               ]"
@@ -201,7 +201,7 @@
       full-width
       full-height
       v-model="db.newExpenseOpen"
-      position="bottom"
+      position="top"
     >
       <q-card class="bg-cyan-900 h-full">
         <div class="flex w-full justify-between items-center px-2">
@@ -325,8 +325,6 @@ export default {
     const db = useDatabase();
     return {
       db,
-      type: "Despesas",
-      types: ["Despesas", "Receita", "Tudo"],
       myLocale: {
         /* começando com Domingo */
         days: "Domingo_Segunda_Terça_Quarta_Quinta_Sexta_Sábado".split("_"),
@@ -354,9 +352,7 @@ export default {
       },
       set(val) {
         let newval = Number(val);
-        console.log(newval);
         if (newval && newval != "" && newval > 1000) {
-          console.log("oi");
           this.db.setDate(`${newval}-${this.db.date.format("MM")}-01`);
         }
       },
@@ -367,9 +363,7 @@ export default {
       },
       set(val) {
         let newval = Number(val);
-        console.log(newval);
         if (newval && newval != "" && newval > 0 && newval < 32) {
-          console.log("oi");
           this.db.setDate(
             `${this.db.year}-${this.db.date.format("MM")}-${newval}`
           );

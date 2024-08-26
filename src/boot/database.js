@@ -1,12 +1,16 @@
-import { app } from './firebase'
-import { getFirestore, collection, query, getDocs, orderBy, getDoc, limit, addDoc, updateDoc, deleteDoc, doc, where } from "firebase/firestore";
+import { app, userAuth } from './firebase'
+import { getFirestore, collection, query, getDocs, orderBy, getDoc, limit, addDoc, updateDoc, deleteDoc, doc, where, disableNetwork, enableNetwork } from "firebase/firestore";
 import moment from 'moment';
+
+
 
 // Initialize Cloud Firestore and get a reference to the service
 const db = getFirestore(app);
 
 export async function createExpense(data) {
   try {
+    const user = await userAuth()
+    data.userid = user.uid; // Adiciona o userid ao documento
     const docRef = await addDoc(collection(db, "expenses"), data);
     return docRef.id;
   } catch (e) {
@@ -17,7 +21,21 @@ export async function createExpense(data) {
 
 export async function createWallet(data) {
   try {
+    const user = await userAuth()
+    data.userid = user.uid; // Adiciona o userid ao documento
     const docRef = await addDoc(collection(db, "wallets"), data);
+    return docRef.id;
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return false;
+  }
+}
+
+export async function createSafe(data) {
+  try {
+    const user = await userAuth()
+    data.userid = user.uid; // Adiciona o userid ao documento
+    const docRef = await addDoc(collection(db, "safes"), data);
     return docRef.id;
   } catch (e) {
     console.error("Error adding document: ", e);
@@ -27,7 +45,8 @@ export async function createWallet(data) {
 
 export async function getDefaultWallet() {
   try {
-    const res = await getDocs(query(collection(db, "wallets"), where('default', '==', true)));
+    const user = await userAuth()
+    const res = await getDocs(query(collection(db, "wallets"), where('default', '==', true), where('userid', '==', user.uid)));
     let wallet = {};
     res.forEach(doc => {
       wallet = doc.data();
@@ -43,10 +62,11 @@ export async function getDefaultWallet() {
 
 export async function getWallet(id) {
   try {
+    const user = await userAuth()
     const docRef = doc(db, "wallets", id);
     const res = await getDoc(docRef);
 
-    if (res.exists()) {
+    if (res.exists() && res.data().userid === user.uid) {
       let wallet = res.data();
       wallet['id'] = res.id;
       return wallet;
@@ -60,11 +80,12 @@ export async function getWallet(id) {
 }
 export async function getWallets() {
   try {
-    const res = await getDocs(collection(db, "wallets"));
+    const user = await userAuth()
+    const res = await getDocs(query(collection(db, "wallets"), where('userid', '==', user.uid)));
 
-    let wallets = res.docs.map((doc, index) => {
-      let walletData = {...doc.data()} // Criação explícita do objeto
-      walletData['id'] = doc.id
+    let wallets = res.docs.map((doc) => {
+      let walletData = { ...doc.data() } // Criação explícita do objeto
+      walletData['id'] = doc.id;
       return walletData;
     });
 
@@ -74,12 +95,33 @@ export async function getWallets() {
     return [];
   }
 }
-
-
-export async function getExpensesForMonth(dte, filter = null, walletId) {
+export async function getSafes(wallet) {
   try {
+    const user = await userAuth()
+    const res = await getDocs(query(collection(db, "safes"), where('userid', '==', user.uid), where('walletid' , '==' , wallet)));
+
+
+    let safes = res.docs.map((doc) => {
+      let safeData = { ...doc.data() } // Criação explícita do objeto
+
+      safeData['id'] = doc.id;
+      if(safeData.value) safeData['value'] = Number(safeData.value.replace(',', '.'));
+      return safeData;
+    });
+
+    return safes;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+
+export async function getExpensesForMonth(dte,  walletId) {
+  try {
+
+    const user = await userAuth()
     const [day, month, year] = dte.split('/');
-    let type = filter == 'Despesas' ? 'expense' : filter == 'Receita' ? 'income' : null;
     const startOfMonth = moment(`${year}-${month}-01`, 'YYYY-MM-DD');
     const endOfMonth = moment(startOfMonth).endOf('month');
 
@@ -87,18 +129,14 @@ export async function getExpensesForMonth(dte, filter = null, walletId) {
     let expensesQuery = collection(db, "expenses");
 
     // Aplicar os filtros de tipo e carteira
-    let filters = [];
-    if (type) {
-      filters.push(where('type', '==', type));
-    }
+    let filters = [where('userid', '==', user.uid)];
+
     if (walletId) {
       filters.push(where('wallet', '==', walletId));
     }
 
     // Aplicar os filtros ao query
-    if (filters.length > 0) {
-      expensesQuery = query(expensesQuery, ...filters);
-    }
+    expensesQuery = query(expensesQuery, ...filters);
 
     const querySnapshot = await getDocs(expensesQuery);
 
@@ -130,6 +168,7 @@ export async function getExpensesForMonth(dte, filter = null, walletId) {
 }
 
 
+
 export async function updateExpense(expenseId, updatedData) {
   try {
     const expenseRef = doc(db, "expenses", expenseId);
@@ -143,8 +182,12 @@ export async function updateExpense(expenseId, updatedData) {
 
 export async function deleteExpense(expenseId) {
   try {
+
     const expenseRef = doc(db, "expenses", expenseId);
     await deleteDoc(expenseRef);
+    await disableNetwork(db);
+    setTimeout(async () => await enableNetwork(db) , 500)
+    ;
     return true;
   } catch (e) {
     console.error("Error deleting document: ", e);
@@ -154,10 +197,12 @@ export async function deleteExpense(expenseId) {
 
 export async function getExpense(key, value) {
   try {
-    // Cria a query para buscar documentos onde key = value
+    const user = await userAuth()
+    // Cria a query para buscar documentos onde key = value e userid = user.uid
     const expensesQuery = query(
       collection(db, "expenses"),
-      where(key, "==", value)
+      where(key, "==", value),
+      where('userid', '==', user.uid)
     );
 
     const querySnapshot = await getDocs(expensesQuery);

@@ -143,7 +143,7 @@
           left-color="cyan-5"
           @right="(props) => db.deleteExpense(expense, props)"
           @left="(props) => openExpense(expense, props)"
-          v-for="expense in db.expenses"
+          v-for="expense in expenses"
           :key="expense.id"
         >
           <template v-slot:left>
@@ -298,13 +298,17 @@
               input-class="text-white"
               label-color="cyan-6"
               v-model="db.expense.installments"
+              inputmode="numeric"
             />
           </div>
           <div class="w-full flex items-center justify-between">
             <q-btn
               type="button"
               label="Cancelar"
-              @click="db.newExpenseOpen = false"
+              @click="() => {
+                db.newExpenseOpen = false
+                db.resetExpense()
+              }"
               flat
               color="cyan-6"
               push
@@ -343,9 +347,11 @@ export default {
     };
   },
   async mounted() {
-    await this.db.getExpenses();
+
+    await this.db.changeWallet(this.db.currentWallet)
   },
   computed: {
+    expenses(){return this.db.expenses},
     year: {
       get() {
         return this.db.date.format("YYYY");
@@ -373,6 +379,20 @@ export default {
   },
   methods: {
     openExpense(expense, {reset}) {
+      if(expense.mode && expense.mode == 'safe'){
+        this.$q.dialog({
+          title:'Atenção',
+          message:'Dinheiro guardado não pode ser editado, se vc retirou o valor errado, devolva a diferença, ou se adicionou o valor errado retire a diferença!',
+          class:'bg-cyan-10 text-white',
+          ok:{
+            label:"ok",
+            color:'cyan-6',
+            push:true
+          }
+        });
+        reset();
+        return;
+      }
       this.db.expense = {
         description: expense.description,
         date: expense.date,

@@ -96,14 +96,14 @@
         <q-btn
           icon="img:/safe.svg"
           flat
-          class="text-[10px] p-2 full-width"
+          class="text-[12px] p-2 full-width"
           color="cyan-6"
           to="/admin/dashboard"
         />
         <q-btn
           :icon="db.openWallets ? 'fa-solid fa-times' : 'fa-solid fa-wallet'"
           flat
-          class="text-[10px] p-2 full-width"
+          class="text-[12px] p-2 full-width"
           :class="[db.openWallets ? 'bg-cyan-9' : '']"
           color="cyan-6"
           @click="db.openWallets = !openWallets"
@@ -130,14 +130,14 @@
         <q-btn
           icon="fa-solid fa-dollar-sign"
           flat
-          class="text-[10px] p-2 full-width"
+          class="text-[12px] p-2 full-width"
           color="cyan-6"
           to="/admin"
         />
         <q-btn
           icon="fa-solid fa-user"
           flat
-          class="text-[10px] p-2 full-width"
+          class="text-[12px] p-2 full-width"
           color="cyan-6"
           to="/admin/user"
         />
@@ -183,10 +183,6 @@ export default {
         this.db.currentWallet = walletDefault.id;
         await this.db.changeWallet(this.db.currentWallet);
       }
-    }else{
-      console.log('entrou aqui')
-      console.log(this.db.currentWallet)
-      await this.db.changeWallet(this.db.currentWallet);
     }
   },
 };

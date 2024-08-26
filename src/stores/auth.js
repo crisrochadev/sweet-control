@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { useQuasar } from 'quasar'
-import { login, logout, recoverPass, register } from 'src/boot/firebase'
+import { login, logout, recoverPass, register, userAuth } from 'src/boot/firebase'
 import { useRouter } from 'vue-router'
 
 export const useAuth = defineStore('auth', {
@@ -86,7 +86,16 @@ export const useAuth = defineStore('auth', {
       })
     },
     async logout() {
-      return await logout();
+      await logout();
+      this.router.push('/')
+    },
+    async getUser(){
+      const user = await  userAuth()
+      console.log(user)
+      if(user){
+        this.email = user.email,
+        this.name = user.displayName
+      }
     }
   }
 })

@@ -88,13 +88,13 @@
       <div
         class="bg-gray-700 grid"
         :style="
-          $route.path !== '/admin/dashboard'
+          $route.path !== '/admin/dashboard' && $route.path !== '/admin/user'
             ? 'grid-template-columns:repeat(5,1fr)'
             : 'grid-template-columns:repeat(4,1fr)'
         "
       >
         <q-btn
-          icon="fa-solid fa-dashboard"
+          icon="img:/safe.svg"
           flat
           class="text-[10px] p-2 full-width"
           color="cyan-6"
@@ -108,7 +108,7 @@
           color="cyan-6"
           @click="db.openWallets = !openWallets"
         />
-        <div class="relative" v-if="$route.path !== '/admin/dashboard'">
+        <div class="relative" v-if="$route.path !== '/admin/dashboard' && $route.path !== '/admin/user'">
           <div
             class="bg-gray-800 h-16 w-16 flex justify-center items-center absolute -top-10 rounded-full"
           >
@@ -139,11 +139,12 @@
           flat
           class="text-[10px] p-2 full-width"
           color="cyan-6"
+          to="/admin/user"
         />
       </div>
     </q-footer>
 
-    <q-page-container>
+    <q-page-container class="w-full">
       <!-- This is where pages get injected -->
       <router-view />
     </q-page-container>
@@ -177,10 +178,15 @@ export default {
         this.db.wallet.default = true;
         await this.db.createWallet();
       } else {
+
         this.db.wallet = walletDefault;
         this.db.currentWallet = walletDefault.id;
         await this.db.changeWallet(this.db.currentWallet);
       }
+    }else{
+      console.log('entrou aqui')
+      console.log(this.db.currentWallet)
+      await this.db.changeWallet(this.db.currentWallet);
     }
   },
 };

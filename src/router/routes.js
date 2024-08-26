@@ -14,6 +14,7 @@ const routes = [
           { path: '', component: () => import('pages/admin/IndexPage.vue') },
           { path: 'wallets', component: () => import('pages/admin/WalletsPage.vue') },
           { path: 'dashboard', component: () => import('pages/admin/DashboardPage.vue') },
+          { path: 'user', component: () => import('pages/admin/UserPage.vue') },
         ]
       },
     ]

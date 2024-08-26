@@ -23,7 +23,7 @@ export const useDatabase = defineStore('database', {
       openNewWallet: false,
       currentIncome: 400.44,
       newExpenseOpen: false,
-      currentWallet: null,
+      currentWallet: useStorage('wallet-name', null),
       openWallets: false,
       wallet: {
         name: null,

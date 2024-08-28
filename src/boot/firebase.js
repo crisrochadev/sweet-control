@@ -1,7 +1,7 @@
 import { boot } from 'quasar/wrappers'
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, sendPasswordResetEmail, signOut, onAuthStateChanged } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, signInWithEmailAndPassword, sendPasswordResetEmail, updatePassword, reauthenticateWithCredential, signOut, EmailAuthProvider, onAuthStateChanged } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAqvVr4cRjZAXOOUxO_lrumoxlbzCI6YXs",
@@ -45,6 +45,31 @@ export async function register(name, email, password) {
       console.error(error)
       return { errorCode };
     });
+}
+
+// Função para alterar a senha do usuário autenticado
+export async function changePassword(currentPassword, newPassword) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) {
+    console.error('Nenhum usuário autenticado encontrado.');
+    return { error: 'Nenhum usuário autenticado encontrado.' };
+  }
+
+  try {
+    // Reautentica o usuário
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+    await reauthenticateWithCredential(user, credential);
+
+    // Altera a senha
+    await updatePassword(user, newPassword);
+    return true; // Senha alterada com sucesso
+
+  } catch (error) {
+    console.error('Erro ao alterar a senha:', error);
+    return false;
+  }
 }
 
 export async function login(email, password) {
@@ -91,7 +116,24 @@ export async function recoverPass(email) {
       return false
     });
 }
+export async function verifyPassword(email, password) {
+  const auth = getAuth();
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    // Se a autenticação for bem-sucedida, a senha está correta
+    return true;
+  } catch (error) {
+    if (error.code === 'auth/wrong-password') {
+      // Senha incorreta
+      return false;
+    } else {
+      return false
+    }
+  }
+}
 
 export default boot(async (/* { app, router, ... } */) => {
   // something to do
 })
+

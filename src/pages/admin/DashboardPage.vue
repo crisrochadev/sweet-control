@@ -1,8 +1,8 @@
 <template>
   <q-page padding class="w-full h-full relative overflow-hidden flex flex-col">
-    <div class="w-full h-[80svh] relative overflow-hidden grid" style="grid-template-rows: 1fr 1.5rem 30%">
+    <div class="w-full h-[80svh] relative overflow-hidden grid" style="grid-template-rows: 65% 1.5rem 1fr">
       <div
-        class="w-full flex justify-center items-center gap-2 flex-col overflow-hidden flex-1"
+        class="w-full flex flex-col justify-center items-center gap-2 flex-col overflow-hidden flex-1"
       >
         <q-img src="/safe.svg" width="80px" />
         <h2
@@ -17,7 +17,7 @@
           <span>{{ db.totalSafe.toLocaleString('pt-br', {style:'currency', currency:'BRL'}) }}</span>
         </div>
         <div
-          class="w-full grid grid-cols-2 gap-2 justify-between items-center p-2"
+          class="w-full grid grid-cols-2 gap-2"
         >
           <q-btn
             dense
@@ -25,7 +25,7 @@
             unelevated
             color="red-6"
             icon="arrow_downward"
-            size="sm"
+            size="md"
             class="w-full"
             @click="handleSafe('down')"
           ></q-btn>
@@ -35,17 +35,10 @@
             unelevated
             color="green-6"
             icon="arrow_upward"
-            size="sm"
+            size="md"
             class="w-full"
             @click="handleSafe('up')"
           ></q-btn>
-        </div>
-        <div class="w-full flex flex-col">
-          <h3
-            class="leading-3 text-cyan-6 text-xs font-bold uppercase border-b border-cyan-600 w-full pb-2"
-          >
-            Histórico
-          </h3>
         </div>
       </div>
       <h2 class="h-6 uppercase py-1 leading-3 font-bold w-full border-b border-cyan-600 text-cyan-600 text-sm">Histórico</h2>

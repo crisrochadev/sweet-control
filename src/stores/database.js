@@ -185,9 +185,11 @@ export const useDatabase = defineStore('database', {
       this.currentWallet = id;
       await this.getCurrentWallet()
       await this.getExpenses();
+      await this.getSafes();
       this.openWallets = false;
     },
-    async createWallet() {
+    async createWallet(walletName) {
+      this.wallet.name = walletName
       this.loading(async () => {
         if (!this.currentWallet) {
           this.wallet = {
@@ -397,6 +399,9 @@ export const useDatabase = defineStore('database', {
       })
 
     },
+
+
+
     async checkExpense(expense, notCheck = false) {
       this.loading(async () => {
         let newexpense = { ...expense }

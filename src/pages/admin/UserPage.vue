@@ -9,6 +9,7 @@
         dense
         input-class="text-white"
         v-model="auth.name"
+        @blur.prevent="auth.updateUser('name')"
       />
       <q-input
         filled
@@ -18,6 +19,7 @@
         dense
         input-class="text-white"
         v-model="auth.email"
+        @blur.prevent="auth.updateUser('email')"
       />
       <fieldset class="border border-cyan-600 rounded p-2">
         <legend
@@ -25,7 +27,30 @@
         >
           Atualizar senha
         </legend>
-        <q-form class="w-full flex flex-col gap-2">
+        <q-form class="w-full flex flex-col gap-2" @submit.prevent="auth.updateUser('password', 'Senha atualizada com sucesso!')">
+          <q-input
+            filled
+            color="cyan-6"
+            :type="type"
+            label-color="cyan-6"
+            label="Senha Antiga"
+            dense
+            input-class="text-white"
+            v-model="oldpass"
+            @blur.prevent="auth.checkPass(oldpass)"
+          >
+            <template #append>
+              <q-btn
+                round
+                dense
+                flat
+                size="sm"
+                color="cyan-6"
+                :icon="type == 'password' ? 'visibility' : 'visibility_off'"
+                @click="type = type == 'password' ? 'text' : 'password'"
+              />
+            </template>
+          </q-input>
           <q-input
             filled
             color="cyan-6"
@@ -34,7 +59,11 @@
             label="Senha"
             dense
             input-class="text-white"
-            v-model="password"
+            v-model="auth.password"
+            :rules="[
+              (val) =>
+                val.length >= 6 || 'A senha precisa ter 6 caracteres ou mais',
+            ]"
           >
             <template #append>
               <q-btn
@@ -55,7 +84,9 @@
             label-color="cyan-6"
             label="Confirme a senha"
             dense
-
+            :rules="[
+              (val) => val === auth.password || 'As senhas não são iguais',
+            ]"
             input-class="text-white"
             v-model="confirm_password"
           >
@@ -77,6 +108,7 @@
             label="salvar"
             push
             type="submit"
+            :disabled="!auth.isPass"
           />
         </q-form>
       </fieldset>
@@ -93,7 +125,8 @@ export default {
       auth: useAuth(),
       password: null,
       confirm_password: null,
-      type:'password'
+      type: "password",
+      oldpass: null,
     };
   },
   async mounted() {

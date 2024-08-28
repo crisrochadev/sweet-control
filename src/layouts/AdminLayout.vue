@@ -29,53 +29,65 @@
         <q-card-section class="flex justify-between items-center">
           <p class="text-white uppercase font-bold">Carteiras</p>
           <q-btn
-            :icon="db.openNewWallet ? 'close' : 'add'"
-            push
-            color="cyan-6"
+            icon="close"
             dense
-            @click="db.openNewWallet = !db.openNewWallet"
+            flat
+            color="cyan-6"
+            @click="db.openWallets = !db.openWallets"
           />
         </q-card-section>
-        <transition
-          enter-active-class="animated flipInX"
-          leave-active-class="animated flipOutX"
-        >
-          <div
-            class="flex flex-col gap-2 w-full p-2 bg-gray-800"
-            v-if="db.openNewWallet"
+        <q-card-section class="flex justify-center px-2 items-center">
+          <q-btn
+            :icon-right="db.openNewWallet ? 'keyboard_arrow_up' : 'keyboard_arrow_down'"
+            push
+            label="Nova Carteira"
+            color="cyan-6"
+            dense
+            @click="openNewWallet"
+            class="full-width"
           >
-            <h1 class="leading-3 uppercase text-cyan-300 font-bold p-2">
-              Nova carteira
-            </h1>
-            <q-input
-              filled
-              dense
-              color="cyan-6"
-              label-color="cyan-6"
-              input-class="text-cyan-6"
-              v-model="db.wallet.name"
-              required
-              label="Nome da carteira"
-            />
-            <q-btn
-              label="Salvar"
-              class="full-width"
-              color="cyan-6"
-              push
-              @click="db.createWallet"
-            />
-          </div>
-        </transition>
+            <q-menu fit>
+              <div
+                class="flex flex-col gap-2 w-full p-2 bg-gray-800"
+                v-if="db.openNewWallet"
+              >
+                <h1 class="leading-3 uppercase text-cyan-300 font-bold p-2">
+                  Nova carteira
+                </h1>
+                <q-input
+                  filled
+                  dense
+                  color="cyan-6"
+                  label-color="cyan-6"
+                  input-class="text-white"
+                  v-model="curWallet"
+                  required
+                  label="Nome da carteira"
+                />
+                <q-btn
+                  label="Salvar"
+                  class="full-width"
+                  color="cyan-6"
+                  push
+                  @click="db.createWallet(curWallet)"
+                  v-close-popup
+                />
+              </div>
+            </q-menu>
+          </q-btn>
+        </q-card-section>
+
         <q-card-section>
-          <q-list>
+          <q-list class="max-h-[300px] oerflow-y-auto" dense>
             <q-item
               v-for="wallet in db.wallets"
               :key="wallet.id"
               clickable
               @click="db.changeWallet(wallet.id)"
-              class="hover:bg-cyan-800 my-2 shadow-md rounded"
+              class="hover:bg-cyan-800 my-2 shadow-md rounded font-extrabold  uppercase"
+              :class="[db.wallet.name == wallet.name ? 'bg-cyan-600 font-extrabold text-gray-900' : 'bg-cyan-800 text-white']"
             >
-              <q-item-section class="text-white">
+              <q-item-section >
                 {{ wallet.name }}
               </q-item-section>
             </q-item>
@@ -84,7 +96,7 @@
       </q-card>
     </q-dialog>
     <!-- (Optional) The Footer -->
-    <q-footer class="h-8">
+    <q-footer class="h-auto">
       <div
         class="bg-gray-700 grid"
         :style="
@@ -96,19 +108,26 @@
         <q-btn
           icon="img:/safe.svg"
           flat
-          class="text-[12px] p-2 full-width"
+          class="full-width"
           color="cyan-6"
+          size="md"
           to="/admin/dashboard"
         />
         <q-btn
           :icon="db.openWallets ? 'fa-solid fa-times' : 'fa-solid fa-wallet'"
           flat
-          class="text-[12px] p-2 full-width"
+          class="p-2 full-width"
+          size="md"
           :class="[db.openWallets ? 'bg-cyan-9' : '']"
           color="cyan-6"
           @click="db.openWallets = !openWallets"
         />
-        <div class="relative" v-if="$route.path !== '/admin/dashboard' && $route.path !== '/admin/user'">
+        <div
+          class="relative"
+          v-if="
+            $route.path !== '/admin/dashboard' && $route.path !== '/admin/user'
+          "
+        >
           <div
             class="bg-gray-800 h-16 w-16 flex justify-center items-center absolute -top-10 rounded-full"
           >
@@ -130,14 +149,16 @@
         <q-btn
           icon="fa-solid fa-dollar-sign"
           flat
-          class="text-[12px] p-2 full-width"
+          class="p-2 full-width"
+          size="md"
           color="cyan-6"
           to="/admin"
         />
         <q-btn
           icon="fa-solid fa-user"
           flat
-          class="text-[12px] p-2 full-width"
+          class="p-2 full-width"
+          size="md"
           color="cyan-6"
           to="/admin/user"
         />
@@ -167,7 +188,7 @@ export default {
       menuOpen: false,
       auth,
       db,
-      openNewWallet: false,
+      curWallet: null,
     };
   },
   async mounted() {
@@ -178,12 +199,17 @@ export default {
         this.db.wallet.default = true;
         await this.db.createWallet();
       } else {
-
         this.db.wallet = walletDefault;
         this.db.currentWallet = walletDefault.id;
         await this.db.changeWallet(this.db.currentWallet);
       }
     }
+  },
+  methods: {
+    openNewWallet() {
+      this.db.openNewWallet = !this.db.openNewWallet;
+
+    },
   },
 };
 </script>
